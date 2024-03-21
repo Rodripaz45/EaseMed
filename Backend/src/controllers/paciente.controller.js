@@ -1,11 +1,33 @@
 import { pool } from "../db.js";
 import bcrypt from 'bcrypt';
 
+export const register = async (req, res) => {
+    const { email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion } = req.body;
+
+    try {
+        // Genera un hash de la contraseña utilizando bcrypt
+        const hashedPassword = await bcrypt.hash(password, 6);
+
+        // Ejecuta una consulta SQL para insertar los datos del paciente en la tabla 'pacientes'
+        const [rows] = await pool.query('INSERT INTO pacientes (email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [email, hashedPassword, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion]);
+
+        // Envía una respuesta al cliente con el ID generado por la inserción y el correo electrónico
+        res.send({
+            id: rows.insertId,
+            email,
+        });
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al insertar en la base de datos:', error);
+        res.status(500).send('Error en el servidor');
+    }
+};
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
         // Realiza la consulta SQL para seleccionar el usuario por su email
-        const [rows] = await pool.query('SELECT * FROM user WHERE email = ?', [email]);
+        const [rows] = await pool.query('SELECT * FROM pacientes WHERE email = ?', [email]);
 
         // Verifica si se encontró algún usuario con el email proporcionado
         if (rows.length > 0) {
@@ -31,3 +53,4 @@ export const login = async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 };
+
