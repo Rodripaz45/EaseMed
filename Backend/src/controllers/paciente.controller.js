@@ -10,7 +10,7 @@ export const register = async (req, res) => {
 
         // Ejecuta una consulta SQL para insertar los datos del paciente en la tabla 'pacientes'
         const [rows] = await pool.query('INSERT INTO pacientes (email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [email, hashedPassword, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion]);
-
+        //Anadir alergias
         // Envía una respuesta al cliente con el ID generado por la inserción y el correo electrónico
         res.send({
             id: rows.insertId,
