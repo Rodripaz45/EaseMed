@@ -1,5 +1,8 @@
 import { pool } from "../db.js";
+import { generateToken, validateToken } from '../jwt.js';
+
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
     const { email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion } = req.body;
@@ -11,11 +14,21 @@ export const register = async (req, res) => {
         // Ejecuta una consulta SQL para insertar los datos del paciente en la tabla 'pacientes'
         const [rows] = await pool.query('INSERT INTO pacientes (email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [email, hashedPassword, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion]);
         //Anadir alergias
-        // Envía una respuesta al cliente con el ID generado por la inserción y el correo electrónico
-        res.send({
+        
+        const usuarioToken = {
             id: rows.insertId,
-            email,
-        });
+            email: email,
+            nombre: nombre,
+            apellido: apellido,
+            fecha_nacimiento: fecha_nacimiento,
+            documento_identidad: documento_identidad,
+            telefono: telefono,
+            direccion: direccion
+        };
+        
+        const token = generateToken(usuarioToken);
+
+        res.send({token: token});
     } catch (error) {
         // Manejo de errores
         console.error('Error al insertar en la base de datos:', error);
@@ -36,9 +49,21 @@ export const login = async (req, res) => {
             const passwordMatch = await bcrypt.compare(password, user.password);
 
             if (passwordMatch) {
-                // Si las contraseñas coinciden, devuelve los detalles del usuario (sin la contraseña)
-                delete user.password;
-                res.send(user);
+                // Crear objeto con los campos del usuario a incluir en el token
+                const usuarioToken = {
+                    id: user.id,
+                    email: user.email,
+                    nombre: user.nombre,
+                    apellido: user.apellido,
+                    fecha_nacimiento: user.fecha_nacimiento,
+                    documento_identidad: user.documento_identidad,
+                    telefono: user.telefono,
+                    direccion: user.direccion
+                };
+
+                const token = generateToken(usuarioToken);
+
+                res.send({token: token});
             } else {
                 // Si las contraseñas no coinciden, devuelve un mensaje de error
                 res.status(404).send('Credenciales incorrectas');
@@ -53,4 +78,5 @@ export const login = async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 };
+
 
