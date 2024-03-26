@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
+import 'package:mediease/register_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -71,7 +74,7 @@ class LoginPage extends StatelessWidget {
 
                   // Llamar al método postData de ApiService con los datos ingresados
                   ApiService apiService = ApiService();
-                  apiService.postData(email, password);
+                  apiService.login(email, password);
                 },
                 child: Text(
                   'INICIAR SESIÓN',
@@ -118,7 +121,18 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   // Lógica para restablecer la contraseña
                 },
-              )
+              ),
+              SizedBox(height: 16),
+              // Botón para ir a la página de registro
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                },
+                child: Text('Registrarse'),
+              ),
             ],
           ),
         ),
