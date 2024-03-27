@@ -26,6 +26,8 @@ CREATE TABLE doctor (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombres VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL
+    id_administrativo INT NOT NULL,
+    FOREIGN KEY (id_administrativo) REFERENCES administrativo(id)
 );
 
 CREATE TABLE DoctorEspecialidad (
