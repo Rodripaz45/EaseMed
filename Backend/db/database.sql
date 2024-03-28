@@ -11,3 +11,14 @@ CREATE TABLE pacientes (
     telefono VARCHAR(20),
     direccion VARCHAR(255)
 );
+
+
+CREATE TABLE medicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(255) NOT NULL,
+    apellidos VARCHAR(255) NOT NULL,
+    especialidades JSON,
+    descripcion TEXT,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);

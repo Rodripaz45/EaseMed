@@ -1,13 +1,28 @@
 class Doctor {
-  final String name;
-  final String specialization;
-  final String experience;
-  final String image; // Assuming you have image paths for doctors
+  final int id;
+  final String nombres;
+  final String apellidos;
+  final List<String> especialidades;
+  final String descripcion;
+  final String username;
 
   Doctor({
-    required this.name,
-    required this.specialization,
-    required this.experience,
-    required this.image,
+    required this.id,
+    required this.nombres,
+    required this.apellidos,
+    required this.especialidades,
+    required this.descripcion,
+    required this.username,
   });
+
+  factory Doctor.fromJson(Map<String, dynamic> json) {
+    return Doctor(
+      id: json['id'],
+      nombres: json['nombres'],
+      apellidos: json['apellidos'],
+      especialidades: List<String>.from(json['especialidades']),
+      descripcion: json['descripcion'],
+      username: json['username'],
+    );
+  }
 }

@@ -12,19 +12,34 @@ class DoctorCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start, // Alinear al inicio
           children: [
             CircleAvatar(
-              backgroundImage:
-                   AssetImage("assets/doctor1.jpeg")// Assuming you have image assets
+              backgroundImage: AssetImage("assets/doctor1.jpeg"), // Asumiendo que tienes imágenes de médicos
             ),
             SizedBox(width: 16.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(doctor.name, style: TextStyle(fontSize: 18.0)),
-                Text(doctor.specialization, style: TextStyle(fontSize: 14.0)),
-                Text(doctor.experience, style: TextStyle(fontSize: 12.0)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${doctor.nombres} ${doctor.apellidos}',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Especialidades: ${doctor.especialidades.join(", ")}',
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    doctor.descripcion,
+                    style: TextStyle(fontSize: 10.0),
+                    maxLines: 2, // Limitar a 2 líneas
+                    overflow: TextOverflow.ellipsis, // Mostrar puntos suspensivos si el texto es demasiado largo
+                  ),
+                ],
+              ),
             ),
           ],
         ),
