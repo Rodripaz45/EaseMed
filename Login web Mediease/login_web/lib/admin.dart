@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_web/api_service.dart';
@@ -8,7 +10,7 @@ class PostMedicoPage extends StatefulWidget {
 }
 
 class _PostMedicoPageState extends State<PostMedicoPage> {
-  final ApiService apiService = ApiService(); // Instancia de ApiService
+  final ApiService apiService = ApiService();
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();

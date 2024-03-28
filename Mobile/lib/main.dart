@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red, // Utilizamos el color rojo como tema principal
       ),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
@@ -76,6 +76,10 @@ class LoginPage extends StatelessWidget {
                   // Llamar al método postData de ApiService con los datos ingresados
                   ApiService apiService = ApiService();
                   apiService.login(email, password);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                 },
                 child: Text(
                   'INICIAR SESIÓN',

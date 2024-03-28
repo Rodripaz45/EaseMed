@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_web/list_doctors.dart';
 import 'admin.dart';
 
 class PantallaInicio extends StatelessWidget {
@@ -48,7 +49,7 @@ class PantallaInicio extends StatelessWidget {
                   'Doctores Agregados',
                   'Ver la lista de doctores',
                   Colors.green,
-                  PostMedicoPage(),
+                  DoctorProfile(),
                 ),
               ],
             ),

@@ -15,7 +15,7 @@ class DoctorCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start, // Alinear al inicio
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage("assets/doctor1.jpeg"), // Asumiendo que tienes imágenes de médicos
+              backgroundImage: NetworkImage('https://t3.ftcdn.net/jpg/02/48/87/00/360_F_248870078_Wuf8dA4IVf1SB8aH9Ah0HMNYOCNun479.jpg'), // Asumiendo que tienes imágenes de médicos
             ),
             SizedBox(width: 16.0),
             Expanded(
