@@ -9,8 +9,11 @@ export const register = async (req, res) => {
         // Genera un hash de la contraseña utilizando bcrypt
         const hashedPassword = await bcrypt.hash(password, 6);
 
-        // Ejecuta una consulta SQL para insertar los datos del paciente en la tabla 'pacientes'
-        const [rows] = await pool.query('INSERT INTO pacientes (email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [email, hashedPassword, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion]);
+        const query = 'INSERT INTO pacientes (email, password, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+        const values = [email, hashedPassword, nombre, apellido, fecha_nacimiento, documento_identidad, telefono, direccion];
+
+        const { rows } = await pool.query(query, values);
+
         //Anadir alergias
         
         const usuarioToken = {
@@ -38,7 +41,11 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
         // Realiza la consulta SQL para seleccionar el usuario por su email
-        const [rows] = await pool.query('SELECT * FROM pacientes WHERE email = ?', [email]);
+        const query = 'SELECT * FROM pacientes WHERE email = $1';
+        const values = [email];
+            
+        const { rows } = await pool.query(query, values);
+
 
         // Verifica si se encontró algún usuario con el email proporcionado
         if (rows.length > 0) {

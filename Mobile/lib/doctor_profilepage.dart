@@ -13,6 +13,38 @@ class _DoctorProfileState extends State<DoctorProfile> {
 
   final ApiService apiService = ApiService(); // Instancia ApiService
 
+  List<String> _especialidades = [
+    'Alergología',
+    'Anestesiología',
+    'Cardiología',
+    'Cirugía',
+    'Dermatología',
+    'Endocrinología',
+    'Gastroenterología',
+    'Geriatría',
+    'Ginecología',
+    'Hematología',
+    'Infectología',
+    'Medicina de emergencia',
+    'Medicina deportiva',
+    'Medicina familiar',
+    'Medicina interna',
+    'Nefrología',
+    'Neumología',
+    'Neurología',
+    'Obstetricia',
+    'Oncología',
+    'Oftalmología',
+    'Ortopedia',
+    'Otorrinolaringología',
+    'Pediatría',
+    'Psiquiatría',
+    'Radiología',
+    'Reumatología',
+    'Traumatología',
+    'Urología'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +71,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pantalla 1'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              // Muestra un menú emergente con las opciones de filtrado
+              _showFilterOptions(context);
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: doctors.length,
@@ -46,6 +87,31 @@ class _DoctorProfileState extends State<DoctorProfile> {
           return DoctorCard(doctor: doctors[index]);
         },
       ),
+    );
+  }
+
+  void _showFilterOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Filtrar por especialidad'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: _especialidades.map((especialidad) {
+                return ListTile(
+                  title: Text(especialidad),
+                  onTap: () {
+                    // Agrega aquí la lógica para aplicar el filtro
+                    print('Filtrar por: $especialidad');
+                    Navigator.pop(context); // Cierra el diálogo
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }
