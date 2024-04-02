@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mediease/api_service.dart'; // Importa ApiService
+import 'package:mediease/api_service.dart';
 import 'package:mediease/doctor.dart';
 import 'package:mediease/doctor_card.dart';
 
@@ -9,10 +9,9 @@ class DoctorProfile extends StatefulWidget {
 }
 
 class _DoctorProfileState extends State<DoctorProfile> {
-  late List<Doctor> doctors = [];
-
-  final ApiService apiService = ApiService(); // Instancia ApiService
-
+  late List<Doctor> _originalDoctors = [];
+  late List<Doctor> _filteredDoctors = [];
+  final ApiService apiService = ApiService();
   List<String> _especialidades = [
     'Alergología',
     'Anestesiología',
@@ -45,23 +44,22 @@ class _DoctorProfileState extends State<DoctorProfile> {
     'Urología'
   ];
 
+  String? _selectedEspecialidad;
+
   @override
   void initState() {
     super.initState();
-    // Llama a la función para obtener los médicos al iniciar la pantalla
     _fetchDoctors();
   }
 
   Future<void> _fetchDoctors() async {
     try {
-      // Llama al método getMedicos de ApiService para obtener los médicos
       List<Doctor> fetchedDoctors = await apiService.getMedicos();
-
       setState(() {
-        doctors = fetchedDoctors;
+        _originalDoctors = fetchedDoctors;
+        _filteredDoctors = fetchedDoctors;
       });
     } catch (e) {
-      // Manejar errores
       print('Error al obtener los médicos: $e');
     }
   }
@@ -75,16 +73,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-              // Muestra un menú emergente con las opciones de filtrado
               _showFilterOptions(context);
             },
           ),
         ],
       ),
       body: ListView.builder(
-        itemCount: doctors.length,
+        itemCount: _filteredDoctors.length,
         itemBuilder: (context, index) {
-          return DoctorCard(doctor: doctors[index]);
+          return DoctorCard(doctor: _filteredDoctors[index]);
         },
       ),
     );
@@ -99,12 +96,16 @@ class _DoctorProfileState extends State<DoctorProfile> {
           content: SingleChildScrollView(
             child: Column(
               children: _especialidades.map((especialidad) {
-                return ListTile(
+                return RadioListTile<String>(
                   title: Text(especialidad),
-                  onTap: () {
-                    // Agrega aquí la lógica para aplicar el filtro
-                    print('Filtrar por: $especialidad');
-                    Navigator.pop(context); // Cierra el diálogo
+                  value: especialidad,
+                  groupValue: _selectedEspecialidad,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedEspecialidad = value;
+                    });
+                    _applyFilter(value!);
+                    Navigator.pop(context);
                   },
                 );
               }).toList(),
@@ -113,5 +114,20 @@ class _DoctorProfileState extends State<DoctorProfile> {
         );
       },
     );
+  }
+
+  void _applyFilter(String especialidad) {
+    if (especialidad == 'Todas') {
+      setState(() {
+        _filteredDoctors = _originalDoctors;
+      });
+    } else {
+      List<Doctor> filteredDoctors = _originalDoctors
+          .where((doctor) => doctor.especialidades.contains(especialidad))
+          .toList();
+      setState(() {
+        _filteredDoctors = filteredDoctors;
+      });
+    }
   }
 }

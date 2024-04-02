@@ -12,10 +12,11 @@ class DoctorCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start, // Alinear al inicio
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage('https://t3.ftcdn.net/jpg/02/48/87/00/360_F_248870078_Wuf8dA4IVf1SB8aH9Ah0HMNYOCNun479.jpg'), // Asumiendo que tienes imágenes de médicos
+              backgroundImage: NetworkImage(
+                  'https://t3.ftcdn.net/jpg/02/48/87/00/360_F_248870078_Wuf8dA4IVf1SB8aH9Ah0HMNYOCNun479.jpg'),
             ),
             SizedBox(width: 16.0),
             Expanded(
@@ -35,8 +36,21 @@ class DoctorCard extends StatelessWidget {
                   Text(
                     doctor.descripcion,
                     style: TextStyle(fontSize: 10.0),
-                    maxLines: 2, // Limitar a 2 líneas
-                    overflow: TextOverflow.ellipsis, // Mostrar puntos suspensivos si el texto es demasiado largo
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Username: ${doctor.username}',
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Agrega aquí la lógica para ver más detalles del doctor
+                      print('Ver más detalles del doctor');
+                    },
+                    child: Text('Ver más'),
                   ),
                 ],
               ),
