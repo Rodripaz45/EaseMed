@@ -1,23 +1,22 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_web/api_service.dart';
-
+ 
 class PostMedicoPage extends StatefulWidget {
   @override
   _PostMedicoPageState createState() => _PostMedicoPageState();
 }
-
+ 
 class _PostMedicoPageState extends State<PostMedicoPage> {
   final ApiService apiService = ApiService();
-
+ 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
+ 
   List<String> _especialidades = [
     'Alergología',
     'Anestesiología',
@@ -49,9 +48,9 @@ class _PostMedicoPageState extends State<PostMedicoPage> {
     'Traumatología',
     'Urología'
   ];
-
+ 
   List<String> _selectedEspecialidades = [];
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,13 +72,12 @@ class _PostMedicoPageState extends State<PostMedicoPage> {
                 decoration: InputDecoration(labelText: 'Apellidos'),
               ),
               SizedBox(height: 16),
-              Text('Especialidades:',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: _buildEspecialidadesCheckboxes(),
+              Text(
+                'Especialidades:',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 8),
+              _buildAutocompleteTextField(),
               SizedBox(height: 16),
               TextField(
                 controller: _descriptionController,
@@ -107,57 +105,88 @@ class _PostMedicoPageState extends State<PostMedicoPage> {
       ),
     );
   }
-
-  List<Widget> _buildEspecialidadesCheckboxes() {
-    List<Widget> checkboxes = [];
-    for (String especialidad in _especialidades) {
-      checkboxes.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-              value: _selectedEspecialidades.contains(especialidad),
-              onChanged: (value) {
-                setState(() {
-                  if (value != null && value) {
-                    _selectedEspecialidades.add(especialidad);
-                  } else {
-                    _selectedEspecialidades.remove(especialidad);
-                  }
-                });
+ 
+  Widget _buildAutocompleteTextField() {
+    return Autocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+       
+        return _especialidades.where((String option) {
+          return option.toLowerCase().contains(
+                textEditingValue.text.toLowerCase(),
+              );
+        });
+      },
+      onSelected: (String selectedOption) {
+       
+        setState(() {
+          _selectedEspecialidades.add(selectedOption);
+        });
+      },
+      fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+     
+        return TextField(
+          controller: textEditingController,
+          focusNode: focusNode,
+          onChanged: (String value) {
+           
+            _updateAutocompleteOptions(value);
+          },
+          decoration: InputDecoration(
+            hintText: 'Ingrese una especialidad',
+            suffixIcon: IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () {
+                textEditingController.clear();
+                _updateAutocompleteOptions('');
               },
             ),
-            Text(especialidad),
-          ],
-        ),
-      );
-    }
-    return checkboxes;
+          ),
+          onSubmitted: (String value) {
+         
+            if (value.isNotEmpty) {
+              _selectedEspecialidades.add(value);
+              textEditingController.clear();
+            }
+          },
+        );
+      },
+    );
   }
-
+ 
+  void _updateAutocompleteOptions(String value) {
+   
+    setState(() {});
+  }
+ 
   void _addMedico() async {
-  String nombres = _nameController.text;
-  String apellidos = _lastNameController.text;
-  List<String> especialidades = _selectedEspecialidades;
-  String descripcion = _descriptionController.text;
-  String username = _usernameController.text;
-  String password = _passwordController.text;
-
-  // Llama al servicio API para crear el médico
-  await apiService.createMedico(
-      nombres, apellidos, especialidades, descripcion, username, password);
-
-  // Muestra el toast
-  Fluttertoast.showToast(
-    msg: 'Médico creado correctamente',
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.green,
-    textColor: Colors.white,
-  );
-
-  // Regresa a la pantalla anterior
-  Navigator.pop(context);
+    String nombres = _nameController.text;
+    String apellidos = _lastNameController.text;
+    List<String> especialidades = _selectedEspecialidades;
+    String descripcion = _descriptionController.text;
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+ 
+ 
+    await apiService.createMedico(
+      nombres,
+      apellidos,
+      especialidades,
+      descripcion,
+      username,
+      password,
+    );
+ 
+ 
+    Fluttertoast.showToast(
+      msg: 'Médico creado correctamente',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+ 
+    Navigator.pop(context);
+  }
 }
-
-}
+ 
+ 
