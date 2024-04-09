@@ -3,6 +3,13 @@ import 'package:mediease/api_service.dart';
 import 'package:mediease/doctor.dart';
 import 'package:mediease/doctor_card.dart';
 
+class Especialidad {
+  String nombre;
+  bool seleccionada;
+
+  Especialidad(this.nombre, this.seleccionada);
+}
+
 class DoctorProfile extends StatefulWidget {
   @override
   _DoctorProfileState createState() => _DoctorProfileState();
@@ -12,39 +19,37 @@ class _DoctorProfileState extends State<DoctorProfile> {
   late List<Doctor> _originalDoctors = [];
   late List<Doctor> _filteredDoctors = [];
   final ApiService apiService = ApiService();
-  List<String> _especialidades = [
-    'Alergología',
-    'Anestesiología',
-    'Cardiología',
-    'Cirugía',
-    'Dermatología',
-    'Endocrinología',
-    'Gastroenterología',
-    'Geriatría',
-    'Ginecología',
-    'Hematología',
-    'Infectología',
-    'Medicina de emergencia',
-    'Medicina deportiva',
-    'Medicina familiar',
-    'Medicina interna',
-    'Nefrología',
-    'Neumología',
-    'Neurología',
-    'Obstetricia',
-    'Oncología',
-    'Oftalmología',
-    'Ortopedia',
-    'Otorrinolaringología',
-    'Pediatría',
-    'Psiquiatría',
-    'Radiología',
-    'Reumatología',
-    'Traumatología',
-    'Urología'
+  List<Especialidad> _especialidades = [
+    Especialidad('Alergología', false),
+    Especialidad('Anestesiología', false),
+    Especialidad('Cardiología', false),
+    Especialidad('Cirugía', false),
+    Especialidad('Dermatología', false),
+    Especialidad('Endocrinología', false),
+    Especialidad('Gastroenterología', false),
+    Especialidad('Geriatría', false),
+    Especialidad('Ginecología', false),
+    Especialidad('Hematología', false),
+    Especialidad('Infectología', false),
+    Especialidad('Medicina de emergencia', false),
+    Especialidad('Medicina deportiva', false),
+    Especialidad('Medicina familiar', false),
+    Especialidad('Medicina interna', false),
+    Especialidad('Nefrología', false),
+    Especialidad('Neumología', false),
+    Especialidad('Neurología', false),
+    Especialidad('Obstetricia', false),
+    Especialidad('Oncología', false),
+    Especialidad('Oftalmología', false),
+    Especialidad('Ortopedia', false),
+    Especialidad('Otorrinolaringología', false),
+    Especialidad('Pediatría', false),
+    Especialidad('Psiquiatría', false),
+    Especialidad('Radiología', false),
+    Especialidad('Reumatología', false),
+    Especialidad('Traumatología', false),
+    Especialidad('Urología', false),
   ];
-
-  String? _selectedEspecialidad;
 
   @override
   void initState() {
@@ -87,47 +92,103 @@ class _DoctorProfileState extends State<DoctorProfile> {
     );
   }
 
-  void _showFilterOptions(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Filtrar por especialidad'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: _especialidades.map((especialidad) {
-                return RadioListTile<String>(
-                  title: Text(especialidad),
-                  value: especialidad,
-                  groupValue: _selectedEspecialidad,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedEspecialidad = value;
-                    });
-                    _applyFilter(value!);
-                    Navigator.pop(context);
-                  },
-                );
-              }).toList(),
-            ),
+ void _showFilterOptions(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Filtrar por especialidades'),
+        content: SingleChildScrollView(
+          child: Column(
+            children: _especialidades.map((especialidad) {
+              return CustomCheckboxListTile(
+                title: especialidad.nombre,
+                value: especialidad.seleccionada,
+                onChanged: (value) {
+                  setState(() {
+                    _setCheckState(especialidad, value ?? false);
+                    _applyFilter();
+                  });
+                },
+              );
+            }).toList(),
           ),
-        );
-      },
-    );
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cerrar'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  bool _isChecked(Especialidad especialidad) {
+    return especialidad.seleccionada;
   }
 
-  void _applyFilter(String especialidad) {
-    if (especialidad == 'Todas') {
-      setState(() {
+  void _setCheckState(Especialidad especialidad, bool value) {
+    especialidad.seleccionada = value;
+  }
+
+  void _applyFilter() {
+    List<String> especialidadesSeleccionadas = _especialidades
+        .where((especialidad) => especialidad.seleccionada)
+        .map((especialidad) => especialidad.nombre)
+        .toList();
+
+    setState(() {
+      if (especialidadesSeleccionadas.isEmpty) {
         _filteredDoctors = _originalDoctors;
-      });
-    } else {
-      List<Doctor> filteredDoctors = _originalDoctors
-          .where((doctor) => doctor.especialidades.contains(especialidad))
-          .toList();
-      setState(() {
-        _filteredDoctors = filteredDoctors;
-      });
-    }
+      } else {
+        _filteredDoctors = _originalDoctors.where((doctor) =>
+            doctor.especialidades.any(
+                (especialidad) => especialidadesSeleccionadas.contains(especialidad))).toList();
+      }
+    });
+  }
+}
+
+class CustomCheckboxListTile extends StatefulWidget {
+  final String title;
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+
+  const CustomCheckboxListTile({
+    required this.title,
+    required this.value,
+    required this.onChanged,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _CustomCheckboxListTileState createState() => _CustomCheckboxListTileState();
+}
+
+class _CustomCheckboxListTileState extends State<CustomCheckboxListTile> {
+  bool _isChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isChecked = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(widget.title),
+      value: _isChecked,
+      onChanged: (value) {
+        setState(() {
+          _isChecked = value ?? false;
+        });
+        widget.onChanged(_isChecked);
+      },
+    );
   }
 }

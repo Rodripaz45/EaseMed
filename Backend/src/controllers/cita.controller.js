@@ -4,6 +4,17 @@ export const createCita = async (req, res) => {
     const { id_medico, id_paciente, fecha, hora } = req.body;
 
     try {
+        // Verificar si ya existe una cita con el mismo doctor en la misma fecha y hora
+        const { rows: existingCitas } = await pool.query(
+            'SELECT id_cita FROM cita WHERE id_medico = $1 AND fecha = $2 AND hora = $3',
+            [id_medico, fecha, hora]
+        );
+
+        if (existingCitas.length > 0) {
+            return res.status(400).send({ message: 'Ya existe una cita con este doctor en la misma fecha y hora.' });
+        }
+
+        // Si no existe, crear la cita
         const { rows } = await pool.query(
             'INSERT INTO cita (id_medico, id_paciente, fecha, hora) VALUES ($1, $2, $3, $4) RETURNING id_cita, id_medico, id_paciente, fecha, hora',
             [id_medico, id_paciente, fecha, hora]
@@ -17,6 +28,7 @@ export const createCita = async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 };
+
 export const getCita = async (req, res) => {
     try {
         const { rows } = await pool.query(`
