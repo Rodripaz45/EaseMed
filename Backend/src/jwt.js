@@ -19,13 +19,17 @@ export const generateToken = (usuarioToken) => {
     }
 };
 
-export const validateToken = (req, res, next) => {
-    try {
-        const token = req.headers.authorization.split(' ')[1]; // Extraer el token del encabezado Authorization
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.usuario = decoded; // Guardar la información decodificada en el objeto de solicitud
-    } catch (error) {
-        console.error('Error al validar el token:', error);
-        return res.status(401).send('Token no válido');
-    }
+
+// Función para validar el token JWT
+export const validateToken = (token, claveSecreta) => {
+  try {
+    // Verifica y decodifica el token utilizando la clave secreta
+    const decoded = jwt.verify(token, claveSecreta);
+    // Si el token es válido, puedes acceder a la información decodificada en decoded
+    console.log(decoded); // Puedes hacer lo que necesites con la información decodificada
+    return decoded; // Opcional: puedes devolver la información decodificada si la necesitas en otro lugar
+  } catch (error) {
+    // Si hay un error al validar el token, puedes manejarlo aquí o lanzar una excepción
+    throw new Error('Token no válido');
+  }
 };
