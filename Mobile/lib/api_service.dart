@@ -89,6 +89,47 @@ class ApiService {
     }
   }
 
+  Future<void> createCita(
+      String idMedico, String idPaciente, String fecha, String hora) async {
+    try {
+      var url = 'http://localhost:3000/cita/create';
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({
+        'id_medico': idMedico,
+        'id_paciente': idPaciente,
+        'fecha': fecha,
+        'hora': hora,
+      });
+
+      print('Enviando solicitud HTTP...');
+
+      var response = await HttpRequest.request(url,
+          method: 'POST', requestHeaders: headers, sendData: body);
+
+      print('Solicitud completada con éxito.');
+
+      if (response.status == 201) {
+        // Verificar si la solicitud fue exitosa (código de estado 201 - Created)
+        print('Código de estado 201 - Cita creada:');
+        print(response.responseText);
+        // Aquí puedes procesar el cuerpo de la respuesta según necesites
+      } else if (response.status == 400) {
+        // Manejar el caso de error 400 (Bad Request)
+        print('Error en la solicitud:');
+        print('Código de estado: ${response.status}');
+        print('Mensaje: ${response.responseText}');
+      } else {
+        // Manejar otros códigos de estado según sea necesario
+        print('Error en la respuesta:');
+        print('Código de estado: ${response.status}');
+        print('Mensaje: ${response.statusText}');
+      }
+    } catch (e) {
+      print('Error en la solicitud:');
+      print(e);
+    }
+  }
+
   Future<List<Doctor>> getMedicos() async {
     try {
       var url = 'http://localhost:3000/medico';
