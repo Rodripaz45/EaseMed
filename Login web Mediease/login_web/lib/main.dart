@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'pantallainicio.dart'; 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -142,21 +142,18 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
-                       
                         String enteredUsername = _usernameController.text;
                         String enteredPassword = _passwordController.text;
 
                         if (enteredUsername == adminUsername &&
                             enteredPassword == adminPassword) {
-                          
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PantallaInicio(), 
+                              builder: (context) => PantallaInicio(),
                             ),
                           );
                         } else {
-                          
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -186,10 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              Color(0xFFAE1F23), 
-                              Color(0xFF303030), 
-                              Color(0xFF606060), 
-                              
+                              Color(0xFFAE1F23),
+                              Color(0xFF303030),
+                              Color(0xFF606060),
                             ],
                           ),
                         ),

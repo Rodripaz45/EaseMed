@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_web/list_doctors.dart';
 import 'admin.dart';
+import 'Ver_Citas.dart';
 
 class PantallaInicio extends StatelessWidget {
   @override
@@ -50,6 +51,14 @@ class PantallaInicio extends StatelessWidget {
                   'Ver la lista de doctores',
                   Colors.green,
                   DoctorProfile(),
+                ),
+                _buildMenuCard(
+                  context,
+                  Icons.calendar_today,
+                  'Ver Citas ',
+                  'Visualiza las citas confirmadas ',
+                  Colors.orange,
+                  VerCitas(),
                 ),
               ],
             ),

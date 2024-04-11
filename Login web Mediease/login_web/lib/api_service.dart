@@ -1,8 +1,8 @@
-// ignore_for_file: avoid_print, avoid_web_libraries_in_flutter
 import 'dart:convert';
 import 'dart:html';
 
 import 'package:login_web/doctor.dart';
+import 'package:login_web/cita.dart'; // Asegúrate de importar la clase Cita si existe
 
 class ApiService {
   Future<void> createMedico(
@@ -67,6 +67,31 @@ class ApiService {
               jsonResponse.map((json) => Doctor.fromJson(json)).toList();
 
           return doctors;
+        } else {
+          throw Exception('La respuesta está vacía');
+        }
+      } else {
+        throw Exception('Error en la respuesta');
+      }
+    } catch (e) {
+      throw Exception('Error en la solicitud GET: $e');
+    }
+  }
+
+  // Método para obtener la lista de citas desde la API
+  Future<List<Cita>> getCitas() async {
+    try {
+      var url = 'http://localhost:3000/cita';
+      var headers = {'Content-Type': 'application/json'};
+
+      var response = await HttpRequest.request(url,
+          method: 'GET', requestHeaders: headers);
+
+      if (response.status == 200) {
+        if (response.responseText != null) {
+          List<dynamic> jsonResponse = jsonDecode(response.responseText!);
+          List<Cita> citas = jsonResponse.map((json) => Cita.fromJson(json)).toList();
+          return citas;
         } else {
           throw Exception('La respuesta está vacía');
         }
