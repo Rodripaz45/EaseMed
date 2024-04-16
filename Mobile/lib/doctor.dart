@@ -5,6 +5,9 @@ class Doctor {
   final List<String> especialidades;
   final String descripcion;
   final String username;
+  final String? horarioInicio; // Nuevo campo
+  final String? horarioFin; // Nuevo campo
+  final List<String>? diasTrabajo; // Nuevo campo
 
   Doctor({
     required this.id,
@@ -13,6 +16,9 @@ class Doctor {
     required this.especialidades,
     required this.descripcion,
     required this.username,
+    this.horarioInicio, // Modificado para ser opcional
+    this.horarioFin, // Modificado para ser opcional
+    this.diasTrabajo, // Modificado para ser opcional
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
@@ -23,6 +29,9 @@ class Doctor {
       especialidades: List<String>.from(json['especialidades']),
       descripcion: json['descripcion'],
       username: json['username'],
+      horarioInicio: json['horario_inicio'], // Asignar el valor del JSON al campo
+      horarioFin: json['horario_fin'], // Asignar el valor del JSON al campo
+      diasTrabajo: List<String>.from(json['dias_trabajo']), // Asignar el valor del JSON al campo
     );
   }
 }

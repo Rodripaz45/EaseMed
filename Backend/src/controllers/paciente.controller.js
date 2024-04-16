@@ -29,7 +29,7 @@ export const register = async (req, res) => {
         
         const token = generateToken(usuarioToken);
 
-        res.send({token: token});
+        res.send({token: token, id: rows.insertId});
     } catch (error) {
         // Manejo de errores
         console.error('Error al insertar en la base de datos:', error);
@@ -68,7 +68,7 @@ export const login = async (req, res) => {
 
                 const token = generateToken(usuarioToken);
 
-                res.send({token: token});
+                res.send({token: token, id: user.id});
             } else {
                 // Si las contraseñas no coinciden, devuelve un mensaje de error
                 res.status(404).send('Credenciales incorrectas');

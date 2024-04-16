@@ -1,5 +1,12 @@
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
+import 'package:mediease/api_service.dart';
+import 'package:mediease/doctor.dart';
 import 'package:mediease/doctor_profilepage.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
   runApp(MyMedicalApp());
 }
@@ -19,10 +26,19 @@ class MyMedicalApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final ApiService _apiService = ApiService(); // Instancia de ApiService
+
+  Doctor? _selectedDoctor;
+  List<Doctor> _doctors = [];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -32,7 +48,28 @@ class HomePage extends StatelessWidget {
       lastDate: DateTime(2101),
     );
     if (picked != null) {
-      _dateController.text = picked.toString();
+      // Formatear la fecha seleccionada en el formato "yyyy-MM-dd"
+      String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      _dateController.text = formattedDate;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDoctors();
+  }
+
+  Future<void> _fetchDoctors() async {
+    try {
+      List<Doctor> fetchedDoctors =
+          await _apiService.getMedicos(); // Obtiene la lista de doctores
+      setState(() {
+        _doctors =
+            fetchedDoctors; // Actualiza la lista de doctores en el estado
+      });
+    } catch (e) {
+      print('Error al obtener los médicos: $e');
     }
   }
 
@@ -55,10 +92,22 @@ class HomePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            TextFormField(
-              controller: _nameController,
+            DropdownButtonFormField<Doctor>(
+              value: _selectedDoctor,
+              onChanged: (Doctor? newValue) {
+                setState(() {
+                  _selectedDoctor = newValue;
+                });
+              },
+              items: _doctors.map<DropdownMenuItem<Doctor>>((Doctor doctor) {
+                return DropdownMenuItem<Doctor>(
+                  value: doctor,
+                  child: Text(
+                      '${doctor.nombres} ${doctor.apellidos}'), // Puedes personalizar cómo se muestra cada doctor
+                );
+              }).toList(),
               decoration: InputDecoration(
-                labelText: 'Nombre',
+                labelText: 'Doctor',
               ),
             ),
             SizedBox(height: 10),
@@ -84,16 +133,36 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Aquí puedes agregar la lógica para procesar la reserva
-                // Por ahora, solo limpiamos los campos
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                int? idPaciente = prefs.getInt('userId');
+
+                if (_selectedDoctor == null) {
+                  print('Por favor, seleccione un doctor.');
+                  return; // Salimos de la función si no hay un doctor seleccionado
+                }
+
+                if (idPaciente == null) {
+                  print(
+                      'No se ha encontrado un ID de paciente válido en SharedPreferences.');
+                  return; // Salimos de la función si no hay un ID de paciente válido
+                }
+
+
+                // Llamamos al método createCita de ApiService para enviar la solicitud HTTP
+                ApiService apiService = ApiService();
+                await apiService.createCita(
+                  _selectedDoctor!.id.toString(),
+                  idPaciente.toString(),
+                  _dateController.text,
+                  _timeController.text,
+                );
+
+                // Limpiamos los campos después de imprimir la información
                 _nameController.clear();
                 _dateController.clear();
                 _timeController.clear();
               },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.red, // Color del texto
-              ),
               child: Text('Reservar'),
             ),
           ],
@@ -143,8 +212,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
 
 class Screen2 extends StatelessWidget {
   @override

@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'doctor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   Future<void> login(String email, String password) async {
@@ -21,19 +22,37 @@ class ApiService {
       print('Solicitud completada con éxito.');
 
       if (response.status == 200) {
-        // Verificar si la solicitud fue exitosa (código de estado 200)
         print('Código de estado 200 - Éxito:');
-        print(response.responseText);
-        // Aquí puedes procesar el cuerpo de la respuesta según necesites
+
+        if (response.responseText != null) {
+          try {
+            var jsonResponse = jsonDecode(response.responseText!);
+            var userId = jsonResponse['id'] as int?;
+
+            if (userId != null) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setInt('userId', userId);
+              print(
+                  'ID de usuario guardado en las preferencias compartidas: $userId');
+            } else {
+              print('Error: ID de usuario nulo en la respuesta JSON');
+            }
+
+            // Aquí puedes procesar el cuerpo de la respuesta según necesites
+          } catch (e) {
+            print('Error al decodificar la respuesta JSON: $e');
+          }
+        } else {
+          print('La respuesta está vacía');
+        }
       } else {
+        print('Error en la respuesta:');
+        print('Código de estado: ${response.status}');
+        print('Mensaje: ${response.statusText}');
+
         if (response.status == 404) {
           // Credenciales inválidas
           print('Error en la respuesta: Credenciales inválidas');
-        } else {
-          // Otro código de estado, manejar según sea necesario
-          print('Error en la respuesta:');
-          print('Código de estado: ${response.status}');
-          print('Mensaje: ${response.statusText}');
         }
       }
     } catch (e) {
@@ -73,15 +92,38 @@ class ApiService {
       print('Solicitud completada con éxito.');
 
       if (response.status == 200) {
-        // Verificar si la solicitud fue exitosa (código de estado 200)
         print('Código de estado 200 - Éxito:');
-        print(response.responseText);
-        // Aquí puedes procesar el cuerpo de la respuesta según necesites
+
+        if (response.responseText != null) {
+          try {
+            var jsonResponse = jsonDecode(response.responseText!);
+            var userId = jsonResponse['id'] as int?;
+
+            if (userId != null) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setInt('userId', userId);
+              print(
+                  'ID de usuario guardado en las preferencias compartidas: $userId');
+            } else {
+              print('Error: ID de usuario nulo en la respuesta JSON');
+            }
+
+            // Aquí puedes procesar el cuerpo de la respuesta según necesites
+          } catch (e) {
+            print('Error al decodificar la respuesta JSON: $e');
+          }
+        } else {
+          print('La respuesta está vacía');
+        }
       } else {
-        // Manejar otros códigos de estado según sea necesario
         print('Error en la respuesta:');
         print('Código de estado: ${response.status}');
         print('Mensaje: ${response.statusText}');
+
+        if (response.status == 404) {
+          // Credenciales inválidas
+          print('Error en la respuesta: Credenciales inválidas');
+        }
       }
     } catch (e) {
       print('Error en la solicitud:');
