@@ -5,9 +5,10 @@ class Doctor {
   final List<String> especialidades;
   final String descripcion;
   final String username;
-  final String? horarioInicio; // Nuevo campo
-  final String? horarioFin; // Nuevo campo
-  final List<String>? diasTrabajo; // Nuevo campo
+  final String? horarioInicio;
+  final String? horarioFin;
+  final List<String>? diasTrabajo;
+  late List<String> horasTrabajo; // Lista de horas de trabajo
 
   Doctor({
     required this.id,
@@ -16,10 +17,12 @@ class Doctor {
     required this.especialidades,
     required this.descripcion,
     required this.username,
-    this.horarioInicio, // Modificado para ser opcional
-    this.horarioFin, // Modificado para ser opcional
-    this.diasTrabajo, // Modificado para ser opcional
-  });
+    this.horarioInicio,
+    this.horarioFin,
+    this.diasTrabajo,
+  }) {
+    generarHorasTrabajo(); // Generar la lista de horas de trabajo al crear el objeto Doctor
+  }
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
@@ -29,9 +32,32 @@ class Doctor {
       especialidades: List<String>.from(json['especialidades']),
       descripcion: json['descripcion'],
       username: json['username'],
-      horarioInicio: json['horario_inicio'], // Asignar el valor del JSON al campo
-      horarioFin: json['horario_fin'], // Asignar el valor del JSON al campo
-      diasTrabajo: List<String>.from(json['dias_trabajo']), // Asignar el valor del JSON al campo
+      horarioInicio: json['horario_inicio'],
+      horarioFin: json['horario_fin'],
+      diasTrabajo: List<String>.from(json['dias_trabajo']),
     );
+  }
+
+  void generarHorasTrabajo() {
+    horasTrabajo = [];
+    if (horarioInicio != null && horarioFin != null) {
+      DateTime? inicio = parseTime(horarioInicio!);
+      DateTime? fin = parseTime(horarioFin!);
+      if (inicio != null && fin != null) {
+        while (inicio!.isBefore(fin)) {
+          horasTrabajo.add(inicio.toIso8601String().substring(11, 16));
+          inicio = inicio.add(Duration(minutes: 30));
+        }
+      }
+    }
+  }
+
+  DateTime? parseTime(String timeString) {
+    try {
+      return DateTime.parse('2022-01-01T$timeString');
+    } catch (e) {
+      print('Error parsing time: $e');
+      return null;
+    }
   }
 }

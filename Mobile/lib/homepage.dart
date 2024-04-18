@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   Doctor? _selectedDoctor;
   List<Doctor> _doctors = [];
+  List<String>? _selectedDoctorHours;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _fetchDoctors();
+    _selectedDoctorHours = _selectedDoctor?.horasTrabajo ?? [];
   }
 
   Future<void> _fetchDoctors() async {
@@ -97,6 +99,7 @@ class _HomePageState extends State<HomePage> {
               onChanged: (Doctor? newValue) {
                 setState(() {
                   _selectedDoctor = newValue;
+                  _selectedDoctorHours = _selectedDoctor?.horasTrabajo;
                 });
               },
               items: _doctors.map<DropdownMenuItem<Doctor>>((Doctor doctor) {
@@ -125,10 +128,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 10),
-            TextFormField(
-              controller: _timeController,
+            DropdownButtonFormField<String>(
+              value: _selectedDoctorHours != null &&
+                      _selectedDoctorHours!.isNotEmpty
+                  ? _selectedDoctorHours![0]
+                  : null,
+              onChanged: (String? newValue) {
+                setState(() {
+                  if (newValue != null) {
+                    _selectedDoctorHours = [newValue];
+                  }
+                });
+              },
+              items: _selectedDoctorHours != null &&
+                      _selectedDoctorHours!.isNotEmpty
+                  ? _selectedDoctorHours!
+                      .map<DropdownMenuItem<String>>((String hour) {
+                      return DropdownMenuItem<String>(
+                        value: hour,
+                        child: Text(hour),
+                      );
+                    }).toList()
+                  : [],
               decoration: InputDecoration(
-                labelText: 'Hora',
+                labelText: 'Horas de Trabajo',
               ),
             ),
             SizedBox(height: 20),
@@ -148,14 +171,13 @@ class _HomePageState extends State<HomePage> {
                   return; // Salimos de la función si no hay un ID de paciente válido
                 }
 
-
                 // Llamamos al método createCita de ApiService para enviar la solicitud HTTP
                 ApiService apiService = ApiService();
                 await apiService.createCita(
                   _selectedDoctor!.id.toString(),
                   idPaciente.toString(),
                   _dateController.text,
-                  _timeController.text,
+                  _selectedDoctorHours![0],
                 );
 
                 // Limpiamos los campos después de imprimir la información
