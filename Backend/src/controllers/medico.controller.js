@@ -36,3 +36,37 @@ export const createMedico = async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 };
+
+export const loginMedico = async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        // Realiza la consulta SQL para seleccionar el médico por su nombre de usuario
+        const query = 'SELECT * FROM medicos WHERE username = $1';
+        const values = [username];
+            
+        const { rows } = await pool.query(query, values);
+
+        // Verifica si se encontró algún médico con el nombre de usuario proporcionado
+        if (rows.length > 0) {
+            // Verifica si la contraseña proporcionada coincide con la contraseña almacenada (hasheada)
+            const medico = rows[0];
+            const passwordMatch = await bcrypt.compare(password, medico.password);
+
+            if (passwordMatch) {
+                // Crear objeto con los campos del médico a incluir en el token
+
+                res.send({ message: 'Inicio de sesión exitoso', id: medico.id });
+            } else {
+                // Si las contraseñas no coinciden, devuelve un mensaje de error
+                res.status(404).send('Credenciales incorrectas');
+            }
+        } else {
+            // No se encontró ningún médico con ese nombre de usuario
+            res.status(404).send('Credenciales incorrectas');
+        }
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error en la consulta SQL:', error);
+        res.status(500).send('Error en el servidor');
+    }
+};

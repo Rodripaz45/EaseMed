@@ -32,11 +32,67 @@ export const createCita = async (req, res) => {
 export const getCita = async (req, res) => {
     try {
         const { rows } = await pool.query(`
-            SELECT c.id_cita, c.id_medico, m.nombres AS nombre_medico, p.nombre AS nombre_paciente, c.fecha, c.hora
+            SELECT c.id_cita, c.id_medico, m.nombres AS nombre_medico, c.id_paciente, p.nombre AS nombre_paciente, c.fecha, c.hora
             FROM cita c
             INNER JOIN medicos m ON c.id_medico = m.id
             INNER JOIN pacientes p ON c.id_paciente = p.id
         `);
+        res.send(rows);
+    } catch (error) {
+        console.error('Error en la consulta SQL:', error);
+        res.status(500).send('Error en el servidor');
+    }
+};
+export const getCitasPorMedico = async (req, res) => {
+    const { id_medico } = req.query; // Suponiendo que el ID del médico se pasa como parámetro en la URL
+
+    try {
+        const { rows } = await pool.query(`
+            SELECT c.id_cita, c.id_medico, m.nombres AS nombre_medico, c.id_paciente, p.nombre AS nombre_paciente, c.fecha, c.hora
+            FROM cita c
+            INNER JOIN medicos m ON c.id_medico = m.id
+            INNER JOIN pacientes p ON c.id_paciente = p.id
+            WHERE c.id_medico = $1
+        `, [id_medico]);
+
+        res.send(rows);
+    } catch (error) {
+        console.error('Error en la consulta SQL:', error);
+        res.status(500).send('Error en el servidor');
+    }
+};
+
+// Obtener citas por ID de paciente
+export const getCitasPorPaciente = async (req, res) => {
+    const { id_paciente } = req.query; // Suponiendo que el ID del paciente se pasa como parámetro en la URL
+    try {
+        const { rows } = await pool.query(`
+            SELECT c.id_cita, c.id_medico, m.nombres AS nombre_medico, c.id_paciente, p.nombre AS nombre_paciente, c.fecha, c.hora
+            FROM cita c
+            INNER JOIN medicos m ON c.id_medico = m.id
+            INNER JOIN pacientes p ON c.id_paciente = p.id
+            WHERE c.id_paciente = $1
+        `, [id_paciente]);
+
+        res.send(rows);
+    } catch (error) {
+        console.error('Error en la consulta SQL:', error);
+        res.status(500).send('Error en el servidor');
+    }
+};
+
+export const getCitasDelDia = async (req, res) => {
+    try {
+        const currentDate = new Date().toISOString().slice(0, 10); 
+
+        const { rows } = await pool.query(`
+            SELECT c.id_cita, c.id_medico, m.nombres AS nombre_medico, c.id_paciente, p.nombre AS nombre_paciente, c.fecha, c.hora
+            FROM cita c
+            INNER JOIN medicos m ON c.id_medico = m.id
+            INNER JOIN pacientes p ON c.id_paciente = p.id
+            WHERE c.fecha = $1
+        `, [currentDate]);
+
         res.send(rows);
     } catch (error) {
         console.error('Error en la consulta SQL:', error);
