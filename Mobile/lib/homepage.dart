@@ -208,12 +208,6 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => Screen2()),
               );
               break;
-            case 3:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Screen3()),
-              );
-              break;
           }
         },
         items: [
@@ -252,19 +246,3 @@ class Screen2 extends StatelessWidget {
   }
 }
 
-class Screen3 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Pantalla 3'),
-      ),
-      body: Center(
-        child: Text(
-          'Contenido de la Pantalla 3',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  }
-}
