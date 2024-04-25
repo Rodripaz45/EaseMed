@@ -203,30 +203,33 @@ class ApiService {
       throw Exception('Error en la solicitud GET: $e');
     }
   }
-}
 
-Future<List<Reserva>> getReservas(int idPaciente) async {
-  try {
-    final url = 'http://localhost:3000/cita/paciente?id_paciente=$idPaciente';
-    final headers = {'Content-Type': 'application/json'};
+  static Future<List<Reserva>> getReservas(int idPaciente) async {
+    try {
+      final url = 'http://localhost:3000/cita/paciente?id_paciente=$idPaciente';
+      final headers = {'Content-Type': 'application/json'};
 
-    final response = await HttpRequest.request(url,
-      method: 'GET',
-      requestHeaders: headers,
-    );
+      final response = await HttpRequest.request(
+        url,
+        method: 'GET',
+        requestHeaders: headers,
+      );
 
-    if (response.status == 200) {
-      if (response.responseText != null) {
-        final jsonResponse = jsonDecode(response.responseText!) as List<dynamic>;
-        final reservas = jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
-        return reservas;
+      if (response.status == 200) {
+        if (response.responseText != null) {
+          final jsonResponse =
+              jsonDecode(response.responseText!) as List<dynamic>;
+          final reservas =
+              jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
+          return reservas;
+        } else {
+          throw Exception('La respuesta está vacía');
+        }
       } else {
-        throw Exception('La respuesta está vacía');
+        throw Exception('Error en la respuesta');
       }
-    } else {
-      throw Exception('Error en la respuesta');
+    } catch (e) {
+      throw Exception('Error en la solicitud GET: $e');
     }
-  } catch (e) {
-    throw Exception('Error en la solicitud GET: $e');
   }
 }

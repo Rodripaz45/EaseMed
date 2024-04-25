@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Reserva {
   final int idCita;
   final int idMedico;
@@ -26,6 +28,31 @@ class Reserva {
       nombrePaciente: json['nombre_paciente'] as String,
       fecha: DateTime.parse(json['fecha']),
       hora: json['hora'] as String,
+    );
+  }
+}
+
+class ReservaCard extends StatelessWidget {
+  final Reserva reserva;
+
+  ReservaCard({required this.reserva});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(10),
+      child: ListTile(
+        title: Text('Cita #${reserva.idCita}'),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Médico: ${reserva.nombreMedico}'),
+            Text('Paciente: ${reserva.nombrePaciente}'),
+            Text('Fecha: ${reserva.fecha.toString().split(' ')[0]}'),
+            Text('Hora: ${reserva.hora}'),
+          ],
+        ),
+      ),
     );
   }
 }
