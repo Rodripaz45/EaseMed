@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:login_web/api_service.dart'; 
 import 'package:login_web/doctor.dart';
 import 'package:login_web/doctor_card.dart';
-import 'package:login_web/detallesdoctor.dart';
 
 class DoctorProfile extends StatefulWidget {
   @override
