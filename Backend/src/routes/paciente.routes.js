@@ -6,8 +6,5 @@ const router = Router()
 router.post('/paciente/register',register);
 router.post('/paciente/login',login);
 
-//router.get('/paciente', validateToken, (res) => {
-    //res.send('Token válido. Acceso autorizado.');
-//});
 
 export default router

@@ -36,6 +36,8 @@ export const getCita = async (req, res) => {
             FROM cita c
             INNER JOIN medicos m ON c.id_medico = m.id
             INNER JOIN pacientes p ON c.id_paciente = p.id
+            WHERE c.fecha >= CURRENT_DATE -- Filtrar por fecha desde hoy en adelante
+            ORDER BY c.fecha ASC, c.hora ASC -- Ordenar por fecha ascendente y luego por hora ascendente
         `);
         res.send(rows);
     } catch (error) {
@@ -53,6 +55,8 @@ export const getCitasPorMedico = async (req, res) => {
             INNER JOIN medicos m ON c.id_medico = m.id
             INNER JOIN pacientes p ON c.id_paciente = p.id
             WHERE c.id_medico = $1
+            AND c.fecha >= CURRENT_DATE -- Filtrar por fecha desde hoy en adelante
+            ORDER BY c.fecha ASC, c.hora ASC -- Ordenar por fecha ascendente y luego por hora ascendente
         `, [id_medico]);
 
         res.send(rows);
@@ -72,6 +76,8 @@ export const getCitasPorPaciente = async (req, res) => {
             INNER JOIN medicos m ON c.id_medico = m.id
             INNER JOIN pacientes p ON c.id_paciente = p.id
             WHERE c.id_paciente = $1
+            AND c.fecha >= CURRENT_DATE -- Filtrar por fecha desde hoy en adelante
+            ORDER BY c.fecha ASC, c.hora ASC -- Ordenar por fecha ascendente y luego por hora ascendente
         `, [id_paciente]);
 
         res.send(rows);
