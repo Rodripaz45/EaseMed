@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/doctor.dart';
-import 'package:mediease/doctor_screen_details.dart'; // Importa la pantalla de detalles del doctor
+import 'package:mediease/doctor_screen_details.dart'; // Importa la pantalla de detalles del doctorflutt
 
 class DoctorCard extends StatelessWidget {
   final Doctor doctor;
