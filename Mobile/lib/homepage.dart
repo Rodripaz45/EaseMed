@@ -1,31 +1,10 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/doctor.dart';
 import 'package:mediease/doctor_profilepage.dart';
 import 'package:intl/intl.dart';
-import 'package:mediease/reserve_card.dart';
+import 'package:mediease/reservas_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-void main() {
-  runApp(MyMedicalApp());
-}
-
-class MyMedicalApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EaseMed',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        hintColor: Colors.redAccent,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: HomePage(),
-    );
-  }
-}
 
 class HomePage extends StatefulWidget {
   @override
@@ -191,132 +170,42 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.red,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        onTap: (index) {
-          switch (index) {
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DoctorProfile()),
-              );
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Screen2()),
-              );
-              break;
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.check),
-            label: 'Reservas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Doctores',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_3),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Screen2 extends StatefulWidget {
-  const Screen2({Key? key}) : super(key: key);
-
-  @override
-  _Screen2State createState() => _Screen2State();
-}
-
-class _Screen2State extends State<Screen2> {
-  int idPaciente = 0; // Initialize with default value
-  List<Reserva> reservas = [];
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserId(); // Fetch patient ID from SharedPreferences
-  }
-
-  Future<void> _fetchUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('userId')) {
-      setState(() {
-        idPaciente = prefs.getInt('userId')!;
-      });
-      _fetchReservas(); // Fetch reservations after obtaining ID
-    } else {
-      // Handle the case where 'userId' is not stored in SharedPreferences
-      print('User ID not found in SharedPreferences');
-    }
-  }
-
-  Future<void> _fetchReservas() async {
-    setState(() {
-      isLoading = true; // Set loading state to true
-    });
-    try {
-      final fetchedReservas = await ApiService.getReservas(idPaciente);
-      setState(() {
-        reservas = fetchedReservas;
-        isLoading = false; // Set loading state to false
-      });
-    } catch (e) {
-      // Handle errors appropriately (e.g., display error message)
-      print('Error fetching reservations: $e');
-      // Consider showing a snackbar or dialog to the user
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Pantalla 2'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: isLoading
-            ? Center(child: CircularProgressIndicator()) // Show loading indicator
-            : reservas.isNotEmpty
-                ? Column(
-                    children: [
-                      Text(
-                        'Tus Reservas',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // Display the list of reservations using ListView.builder
-                      Expanded( // Wrap ListView.builder with Expanded
-                        child: ListView.builder(
-                          shrinkWrap: true, // Prevent list view from expanding
-                          itemCount: reservas.length,
-                          itemBuilder: (context, index) {
-                            return ReservaCard(reserva: reservas[index]);
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                : Center(
-                    child: Text(
-                      'No tienes reservas aún',
-                      style: TextStyle(fontSize: 4), // Adjust font size as needed
-                    ),
-                  ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.red,
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Doctores Disponibles'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DoctorProfile()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Tus Reservas'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReservasPage()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

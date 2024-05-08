@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print, avoid_web_libraries_in_flutter
 import 'dart:convert';
 import 'dart:html';
-import 'package:mediease/reserve_card.dart';
+import 'package:mediease/cards/reserve_card.dart';
 
 import 'doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';

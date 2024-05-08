@@ -73,9 +73,9 @@ class CitaCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Optional doctor information header (if available)
-          cita.nombreMedico != null && cita.nombreMedico!.isNotEmpty
+          cita.nombreMedico.isNotEmpty
               ? Text(
-                  cita.nombreMedico!,
+                  cita.nombreMedico,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 )
               : SizedBox(),
