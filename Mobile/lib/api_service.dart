@@ -2,8 +2,9 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:mediease/cards/reserve_card.dart';
+import 'package:mediease/classes/paciente.dart';
 
-import 'doctor.dart';
+import 'classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -232,4 +233,37 @@ class ApiService {
       throw Exception('Error en la solicitud GET: $e');
     }
   }
+ 
+ Future<Paciente> getPacienteById(int id) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('userId');
+
+      if (userId == null) {
+        throw Exception('ID de usuario no encontrado en las preferencias compartidas');
+      }
+
+      var url = 'http://localhost:3000/paciente/getById?id=$userId';
+      var headers = {'Content-Type': 'application/json'};
+
+      var response = await HttpRequest.request(url,
+          method: 'GET', requestHeaders: headers);
+
+      if (response.status == 200) {
+        if (response.responseText != null) {
+          Map<String, dynamic> jsonResponse = jsonDecode(response.responseText!);
+
+          return Paciente.fromJson(jsonResponse);
+        } else {
+          throw Exception('La respuesta está vacía');
+        }
+      } else {
+        throw Exception('Error en la respuesta: ${response.statusText}');
+      }
+    } catch (e) {
+      throw Exception('Error en la solicitud GET: $e');
+    }
+  }
 }
+
+
