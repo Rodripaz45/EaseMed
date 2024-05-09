@@ -48,16 +48,39 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 16),
               // Botón de inicio de sesión
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String email = emailController.text;
                   String password = passwordController.text;
 
                   ApiService apiService = ApiService();
-                  apiService.login(email, password);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
+                  int? statusCode = await apiService.login(email, password);
+                  
+                  if (statusCode == 200) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  } else {
+                    // Manejar el caso en que el estado no sea correcto
+                    // Por ejemplo, mostrar un mensaje de error
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Text(
                   'INICIAR SESIÓN',

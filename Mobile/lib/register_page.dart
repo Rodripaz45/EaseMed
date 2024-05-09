@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:mediease/api_service.dart';
+import 'package:mediease/login_page.dart';
 void main() {
   runApp(MyApp());
 }
@@ -117,7 +118,9 @@ class _RegisterFormState extends State<RegisterForm> {
       telefono,
       direccion,
     ).then((_) {
-      // Si la solicitud se completó con éxito, realiza las acciones necesarias
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),);
       print('Registro completado con éxito');
     });
   }

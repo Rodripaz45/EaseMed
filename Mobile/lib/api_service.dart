@@ -8,63 +8,67 @@ import 'classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  Future<void> login(String email, String password) async {
-    try {
-      var url = 'http://localhost:3000/paciente/login';
-      var headers = {'Content-Type': 'application/json'};
-      var body = json.encode({
-        'email': email,
-        'password': password,
-      });
+Future<int?> login(String email, String password) async {
+  try {
+    var url = 'http://localhost:3000/paciente/login';
+    var headers = {'Content-Type': 'application/json'};
+    var body = json.encode({
+      'email': email,
+      'password': password,
+    });
 
-      print('Enviando solicitud HTTP...');
+    print('Enviando solicitud HTTP...');
 
-      var response = await HttpRequest.request(url,
-          method: 'POST', requestHeaders: headers, sendData: body);
+    var response = await HttpRequest.request(url,
+        method: 'POST', requestHeaders: headers, sendData: body);
 
-      print('Solicitud completada con éxito.');
+    print('Solicitud completada con éxito.');
 
-      if (response.status == 200) {
-        print('Código de estado 200 - Éxito:');
+    if (response.status == 200) {
+      print('Código de estado 200 - Éxito:');
 
-        if (response.responseText != null) {
-          try {
-            var jsonResponse = jsonDecode(response.responseText!);
-            var userId = jsonResponse['id'] as int?;
+      if (response.responseText != null) {
+        try {
+          var jsonResponse = jsonDecode(response.responseText!);
+          var userId = jsonResponse['id'] as int?;
 
-            if (userId != null) {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setInt('userId', userId);
-              print(
-                  'ID de usuario guardado en las preferencias compartidas: $userId');
-            } else {
-              print('Error: ID de usuario nulo en la respuesta JSON');
-            }
-
-            // Aquí puedes procesar el cuerpo de la respuesta según necesites
-          } catch (e) {
-            print('Error al decodificar la respuesta JSON: $e');
+          if (userId != null) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('userId', userId);
+            print(
+                'ID de usuario guardado en las preferencias compartidas: $userId');
+          } else {
+            print('Error: ID de usuario nulo en la respuesta JSON');
           }
-        } else {
-          print('La respuesta está vacía');
+
+          // Aquí puedes procesar el cuerpo de la respuesta según necesites
+        } catch (e) {
+          print('Error al decodificar la respuesta JSON: $e');
         }
       } else {
-        print('Error en la respuesta:');
-        print('Código de estado: ${response.status}');
-        print('Mensaje: ${response.statusText}');
-
-        if (response.status == 404) {
-          // Credenciales inválidas
-          print('Error en la respuesta: Credenciales inválidas');
-        }
+        print('La respuesta está vacía');
       }
-    } catch (e) {
-      print('Error en la solicitud:');
-      print(e);
-    }
-  }
+    } else {
+      print('Error en la respuesta:');
+      print('Código de estado: ${response.status}');
+      print('Mensaje: ${response.statusText}');
 
-  Future<void> register(
+      if (response.status == 404) {
+        // Credenciales inválidas
+        print('Error en la respuesta: Credenciales inválidas');
+      }
+    }
+
+    // Devolver el response status
+    return response.status;
+  } catch (e) {
+    print('Error en la solicitud:');
+    print(e);
+    return null; // En caso de error, devolver null
+  }
+}
+
+Future<int?> register(
       String email,
       String password,
       String nombre,
@@ -128,11 +132,13 @@ class ApiService {
           print('Error en la respuesta: Credenciales inválidas');
         }
       }
+      return response.status; // Devuelve el response status
     } catch (e) {
       print('Error en la solicitud:');
       print(e);
+      return null; // En caso de error, devolver null
     }
-  }
+}
 
   Future<void> createCita(
       String idMedico, String idPaciente, String fecha, String hora) async {
