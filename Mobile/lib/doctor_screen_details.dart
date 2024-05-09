@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mediease/doctor.dart';
+import 'package:mediease/classes/doctor.dart';
 class DoctorDetailsScreen extends StatelessWidget {
   final Doctor doctor;
 

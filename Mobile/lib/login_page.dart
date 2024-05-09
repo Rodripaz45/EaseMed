@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
+import 'package:mediease/homepage.dart';
 import 'package:mediease/register_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -48,13 +49,15 @@ class LoginPage extends StatelessWidget {
               // Botón de inicio de sesión
               ElevatedButton(
                 onPressed: () {
-                  // Obtener los datos ingresados por el usuario
                   String email = emailController.text;
                   String password = passwordController.text;
 
-                  // Llamar al método postData de ApiService con los datos ingresados
                   ApiService apiService = ApiService();
                   apiService.login(email, password);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                 },
                 child: Text(
                   'INICIAR SESIÓN',

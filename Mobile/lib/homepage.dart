@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
-import 'package:mediease/doctor.dart';
+import 'package:mediease/classes/doctor.dart';
 import 'package:mediease/doctor_profilepage.dart';
 import 'package:intl/intl.dart';
+import 'package:mediease/profile_page.dart';
 import 'package:mediease/reservas_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -201,6 +202,16 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ReservasPage()),
+                );
+              },
+            ),
+
+            ListTile(
+              title: Text('Tu Perfil'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
                 );
               },
             ),

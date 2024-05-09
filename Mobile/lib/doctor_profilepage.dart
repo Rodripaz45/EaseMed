@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
-import 'package:mediease/doctor.dart';
+import 'package:mediease/classes/doctor.dart';
 import 'package:mediease/cards/doctor_card.dart';
 
 class Especialidad {
