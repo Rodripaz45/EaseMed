@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
 Future<int?> login(String email, String password) async {
   try {
-    var url = 'http://localhost:3000/paciente/login';
+    var url = 'https://easemedapi.onrender.com/paciente/login';
     var headers = {'Content-Type': 'application/json'};
     var body = json.encode({
       'email': email,
@@ -79,7 +79,7 @@ Future<int?> register(
       String telefono,
       String direccion) async {
     try {
-      var url = 'http://localhost:3000/paciente/register';
+      var url = 'https://easemedapi.onrender.com/paciente/register';
       var headers = {'Content-Type': 'application/json'};
       var body = json.encode({
         'email': email,
@@ -144,7 +144,7 @@ Future<int?> register(
   Future<void> createCita(
       String idMedico, String idPaciente, String fecha, String hora) async {
     try {
-      var url = 'http://localhost:3000/cita/create';
+      var url = 'https://easemedapi.onrender.com/cita/create';
       var headers = {'Content-Type': 'application/json'};
       var body = json.encode({
         'id_medico': idMedico,
@@ -184,7 +184,7 @@ Future<int?> register(
 
   Future<List<Doctor>> getMedicos() async {
     try {
-      var url = 'http://localhost:3000/medico';
+      var url = 'https://easemedapi.onrender.com/medico';
       var headers = {'Content-Type': 'application/json'};
 
       var response = await HttpRequest.request(url,
@@ -214,7 +214,7 @@ Future<int?> register(
 
   static Future<List<Reserva>> getReservas(int idPaciente) async {
     try {
-      final url = 'http://localhost:3000/cita/paciente?id_paciente=$idPaciente';
+      final url = 'https://easemedapi.onrender.com/cita/paciente?id_paciente=$idPaciente';
       final headers = {'Content-Type': 'application/json'};
 
       final response = await HttpRequest.request(
@@ -250,7 +250,7 @@ Future<int?> register(
         throw Exception('ID de usuario no encontrado en las preferencias compartidas');
       }
 
-      var url = 'http://localhost:3000/paciente/getById?id=$userId';
+      var url = 'https://easemedapi.onrender.com/paciente/getById?id=$userId';
       var headers = {'Content-Type': 'application/json'};
 
       var response = await HttpRequest.request(url,
@@ -281,7 +281,7 @@ Future<int?> register(
       throw Exception('ID de usuario no encontrado en las preferencias compartidas');
     }
 
-    var url = 'http://localhost:3000/getConsultasById?id=$userId';
+    var url = 'https://easemedapi.onrender.com/getConsultasById?id=$userId';
     var headers = {'Content-Type': 'application/json'};
 
     var response = await HttpRequest.request(url,

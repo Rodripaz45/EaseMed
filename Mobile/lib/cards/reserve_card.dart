@@ -103,7 +103,6 @@ class ReservaCard extends StatelessWidget {
     ApiService apiService = new ApiService();
     Future<QR> qr = apiService.generarQR(paymentNumber);
     qr.then((qrObject) {
-      print('QR generado: $qrObject');
       Navigator.push(
         context,
         MaterialPageRoute(
