@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:mediease/cards/reserve_card.dart';
+import 'package:mediease/classes/consulta.dart';
 import 'package:mediease/classes/paciente.dart';
 
 import 'classes/doctor.dart';
@@ -270,6 +271,41 @@ Future<int?> register(
       throw Exception('Error en la solicitud GET: $e');
     }
   }
+
+  Future<List<Consulta>> getConsultasById(int id) async {
+  try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('userId');
+
+    if (userId == null) {
+      throw Exception('ID de usuario no encontrado en las preferencias compartidas');
+    }
+
+    var url = 'http://localhost:3000/getConsultasById?id=$userId';
+    var headers = {'Content-Type': 'application/json'};
+
+    var response = await HttpRequest.request(url,
+        method: 'GET', requestHeaders: headers);
+
+    if (response.status == 200) {
+      if (response.responseText != null) {
+        List<dynamic> jsonResponse = jsonDecode(response.responseText!);
+
+        // Mapear la lista de consultas JSON a objetos Consulta
+        List<Consulta> consultas = jsonResponse.map((data) => Consulta.fromJson(data)).toList();
+
+        return consultas;
+      } else {
+        throw Exception('La respuesta está vacía');
+      }
+    } else {
+      throw Exception('Error en la respuesta: ${response.statusText}');
+    }
+  } catch (e) {
+    throw Exception('Error en la solicitud GET: $e');
+  }
+}
+
 }
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
+import 'package:mediease/cards/password_dialog.dart';
 import 'package:mediease/classes/doctor.dart';
 import 'package:mediease/doctor_profilepage.dart';
 import 'package:intl/intl.dart';
@@ -215,6 +216,16 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+            ListTile(
+              title: Text('Tu Historial Medico'),
+              onTap: () {
+                showDialog(
+              context: context,
+              builder: (context) => PasswordDialog(), // Muestra el PasswordDialog
+            );
+              },
+            ),
+
           ],
         ),
       ),

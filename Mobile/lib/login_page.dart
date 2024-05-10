@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/homepage.dart';
-import 'package:mediease/register_page.dart';
+import 'package:mediease/register_page.dart'; // Importa tu archivo de dialogo de contraseña
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  static String email = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,26 +50,28 @@ class LoginPage extends StatelessWidget {
               // Botón de inicio de sesión
               ElevatedButton(
                 onPressed: () async {
-                  String email = emailController.text;
+                  email = emailController.text;
                   String password = passwordController.text;
+
+                  // Guardar el correo electrónico en una variable
 
                   ApiService apiService = ApiService();
                   int? statusCode = await apiService.login(email, password);
-                  
+
                   if (statusCode == 200) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   } else {
-                    // Manejar el caso en que el estado no sea correcto
-                    // Por ejemplo, mostrar un mensaje de error
+                    // Mostrar mensaje de error
                     showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
                           title: Text('Error'),
-                          content: Text('Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
+                          content: Text(
+                              'Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -84,7 +87,8 @@ class LoginPage extends StatelessWidget {
                 },
                 child: Text(
                   'INICIAR SESIÓN',
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(height: 16),
