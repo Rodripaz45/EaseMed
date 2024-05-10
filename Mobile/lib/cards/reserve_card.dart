@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mediease/api_service.dart';
+import 'package:mediease/classes/qr.dart';
+import 'package:mediease/qr_display_screen.dart';
 
 class Reserva {
   final int idCita;
@@ -50,9 +53,68 @@ class ReservaCard extends StatelessWidget {
             Text('Paciente: ${reserva.nombrePaciente}'),
             Text('Fecha: ${reserva.fecha.toString().split(' ')[0]}'),
             Text('Hora: ${reserva.hora}'),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                _showPaymentDialog(context);
+              },
+              child: Text('Generar QR'),
+            ),
           ],
         ),
       ),
     );
   }
+    void _showPaymentDialog(BuildContext context) {
+    TextEditingController _paymentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ingrese el número de pago'),
+          content: TextField(
+            controller: _paymentController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'Número de pago'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String paymentNumber = _paymentController.text;
+                // Aquí puedes llamar a la función para generar el QR con el número de pago
+                _generateQR(context, paymentNumber);
+              },
+              child: Text('Generar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _generateQR(BuildContext context, String paymentNumber) {
+    ApiService apiService = new ApiService();
+    Future<QR> qr = apiService.generarQR(paymentNumber);
+    qr.then((qrObject) {
+      print('QR generado: $qrObject');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => QRDisplayScreen(
+                  qr: qrObject,
+                )),
+      );
+      // Aquí puedes hacer cualquier otra acción con el objeto QR
+    }).catchError((error) {
+      print('Error al generar QR: $error');
+    });
+  }
+
 }

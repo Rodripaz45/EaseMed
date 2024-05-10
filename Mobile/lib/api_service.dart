@@ -4,7 +4,7 @@ import 'dart:html';
 import 'package:mediease/cards/reserve_card.dart';
 import 'package:mediease/classes/consulta.dart';
 import 'package:mediease/classes/paciente.dart';
-
+import 'package:mediease/classes/qr.dart';
 import 'classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -306,6 +306,46 @@ Future<int?> register(
   }
 }
 
-}
+ Future<QR> generarQR(String numeroPago) async {
+    try {
+      var url = 'https://serviciostigomoney.pagofacil.com.bo/api/servicio/generarqrv2';
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({
+        "tcCommerceID": "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c",
+        "tnMoneda": 1,
+        "tnTelefono": 70986514,
+        "tcCorreo": "rodripaz45@gmail.com",
+        "tcNombreUsuario": "JUANITO PEREZ",
+        "tnCiNit": 123455,
+        "tcNroPago": numeroPago,
+        "tnMontoClienteEmpresa": 0.01,
+        "tcUrlCallBack": "",
+        "tcUrlReturn": "",
+        "taPedidoDetalle": {
+          "serial": 1,
+          "producto": "PRODUCTO 1",
+          "cantidad": 2,
+          "precio": 10,
+          "descuento": 10,
+          "total": 2
+        }
+      });
 
+      var response = await HttpRequest.request(
+        url,
+        method: 'POST',
+        requestHeaders: headers,
+        sendData: body,
+      );
 
+      if (response.status == 200) {
+        // Si la respuesta es exitosa, devuelve un objeto QR
+        Map<String, dynamic> jsonResponse = jsonDecode(response.responseText!);
+        return QR.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error en la respuesta: ${response.statusText}');
+      }
+    } catch (e) {
+      throw Exception('Error en la solicitud POST: $e');
+    }
+  }}

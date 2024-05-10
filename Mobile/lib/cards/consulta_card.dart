@@ -1,6 +1,8 @@
 // consulta_card.dart
+// ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:mediease/classes/consulta.dart';
+
 
 class ConsultaCard extends StatelessWidget {
   final Consulta consulta;
