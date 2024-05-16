@@ -319,7 +319,7 @@ Future<int?> register(
         "tnCiNit": 123455,
         "tcNroPago": numeroPago,
         "tnMontoClienteEmpresa": 0.01,
-        "tcUrlCallBack": "",
+        "tcUrlCallBack": "https://easemedapi.onrender.com/callback",
         "tcUrlReturn": "",
         "taPedidoDetalle": {
           "serial": 1,
