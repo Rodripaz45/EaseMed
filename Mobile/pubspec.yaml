@@ -59,6 +59,6 @@ flutter:
     - assets/logo_medease.jpeg
     - assets/doctor1.jpeg
     - assets/new_logo.jpeg
-    - assets/new_logo.ico
+    - assets/new_logo_small.jpg
 
   uses-material-design: true

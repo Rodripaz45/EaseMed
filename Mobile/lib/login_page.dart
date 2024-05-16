@@ -22,7 +22,7 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/new_logo.ico',
+                'assets/new_logo.jpeg',
                 height: 200,
               ),
               SizedBox(height: 20),
