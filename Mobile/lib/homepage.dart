@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 10),
                   Image.asset(
-                    'assets/new_logo.jpeg',
+                    'assets/new_logo.ico',
                     width: 100,
                     height: 100,
                   ),
