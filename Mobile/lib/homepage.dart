@@ -164,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Drawer Header',
+                    'Med Ease',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                   Image.asset(
                     'assets/new_logo_small.jpg',
                     width: 100,
-                    height: 100,
+                    height: 80,
                   ),
                 ],
               ),
