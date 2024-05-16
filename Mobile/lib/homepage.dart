@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-  final ApiService _apiService = ApiService(); // Instancia de ApiService
+  final ApiService _apiService = ApiService();
 
   Doctor? _selectedDoctor;
   List<Doctor> _doctors = [];
@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
       lastDate: DateTime(2101),
     );
     if (picked != null) {
-      // Formatear la fecha seleccionada en el formato "yyyy-MM-dd"
       String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
       _dateController.text = formattedDate;
     }
@@ -46,11 +45,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchDoctors() async {
     try {
-      List<Doctor> fetchedDoctors =
-          await _apiService.getMedicos(); // Obtiene la lista de doctores
+      List<Doctor> fetchedDoctors = await _apiService.getMedicos();
       setState(() {
-        _doctors =
-            fetchedDoctors; // Actualiza la lista de doctores en el estado
+        _doctors = fetchedDoctors;
       });
     } catch (e) {
       print('Error al obtener los médicos: $e');
@@ -63,113 +60,96 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Mi App Médica'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(
-              '¡Haz tu Reserva!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                '¡Haz tu Reserva!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<Doctor>(
-              value: _selectedDoctor,
-              onChanged: (Doctor? newValue) {
-                setState(() {
-                  _selectedDoctor = newValue;
-                  _selectedDoctorHours = _selectedDoctor?.horasTrabajo;
-                });
-              },
-              items: _doctors.map<DropdownMenuItem<Doctor>>((Doctor doctor) {
-                return DropdownMenuItem<Doctor>(
-                  value: doctor,
-                  child: Text(
-                      '${doctor.nombres} ${doctor.apellidos}'), // Puedes personalizar cómo se muestra cada doctor
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                labelText: 'Doctor',
+              SizedBox(height: 20),
+              DropdownButtonFormField<Doctor>(
+                value: _selectedDoctor,
+                onChanged: (Doctor? newValue) {
+                  setState(() {
+                    _selectedDoctor = newValue;
+                    _selectedDoctorHours = _selectedDoctor?.horasTrabajo;
+                  });
+                },
+                items: _doctors.map<DropdownMenuItem<Doctor>>((Doctor doctor) {
+                  return DropdownMenuItem<Doctor>(
+                    value: doctor,
+                    child: Text('${doctor.nombres} ${doctor.apellidos}'),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                  labelText: 'Doctor',
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            InkWell(
-              onTap: () {
-                _selectDate(context);
-              },
-              child: IgnorePointer(
-                child: TextFormField(
-                  controller: _dateController,
-                  decoration: InputDecoration(
-                    labelText: 'Fecha',
+              SizedBox(height: 10),
+              InkWell(
+                onTap: () => _selectDate(context),
+                child: IgnorePointer(
+                  child: TextFormField(
+                    controller: _dateController,
+                    decoration: InputDecoration(
+                      labelText: 'Fecha',
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _selectedDoctorHours != null &&
-                      _selectedDoctorHours!.isNotEmpty
-                  ? _selectedDoctorHours![0]
-                  : null,
-              onChanged: (String? newValue) {
-                setState(() {
-                  if (newValue != null) {
-                    _selectedDoctorHours = [newValue];
-                  }
-                });
-              },
-              items: _selectedDoctorHours != null &&
-                      _selectedDoctorHours!.isNotEmpty
-                  ? _selectedDoctorHours!
-                      .map<DropdownMenuItem<String>>((String hour) {
-                      return DropdownMenuItem<String>(
-                        value: hour,
-                        child: Text(hour),
-                      );
-                    }).toList()
-                  : [],
-              decoration: InputDecoration(
-                labelText: 'Horas de Trabajo',
+              SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _selectedDoctorHours != null && _selectedDoctorHours!.isNotEmpty ? _selectedDoctorHours![0] : null,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    if (newValue != null) {
+                      _selectedDoctorHours = [newValue];
+                    }
+                  });
+                },
+                items: _selectedDoctorHours != null && _selectedDoctorHours!.isNotEmpty
+                    ? _selectedDoctorHours!
+                        .map<DropdownMenuItem<String>>((String hour) {
+                          return DropdownMenuItem<String>(
+                            value: hour,
+                            child: Text(hour),
+                          );
+                        }).toList()
+                    : [],
+                decoration: InputDecoration(
+                  labelText: 'Horas de Trabajo',
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                int? idPaciente = prefs.getInt('userId');
-
-                if (_selectedDoctor == null) {
-                  print('Por favor, seleccione un doctor.');
-                  return; // Salimos de la función si no hay un doctor seleccionado
-                }
-
-                if (idPaciente == null) {
-                  print(
-                      'No se ha encontrado un ID de paciente válido en SharedPreferences.');
-                  return; // Salimos de la función si no hay un ID de paciente válido
-                }
-
-                // Llamamos al método createCita de ApiService para enviar la solicitud HTTP
-                ApiService apiService = ApiService();
-                await apiService.createCita(
-                  _selectedDoctor!.id.toString(),
-                  idPaciente.toString(),
-                  _dateController.text,
-                  _selectedDoctorHours![0],
-                );
-
-                // Limpiamos los campos después de imprimir la información
-                _nameController.clear();
-                _dateController.clear();
-                _timeController.clear();
-              },
-              child: Text('Reservar'),
-            ),
-          ],
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  int? idPaciente = prefs.getInt('userId');
+                  if (_selectedDoctor == null || idPaciente == null) {
+                    print('Por favor, seleccione un doctor o verifique el ID del paciente.');
+                    return;
+                  }
+                  await _apiService.createCita(
+                    _selectedDoctor!.id.toString(),
+                    idPaciente.toString(),
+                    _dateController.text,
+                    _selectedDoctorHours![0],
+                  );
+                  _nameController.clear();
+                  _dateController.clear();
+                  _timeController.clear();
+                },
+                child: Text('Reservar'),
+              ),
+            ],
+          ),
         ),
       ),
       drawer: Drawer(
@@ -178,14 +158,25 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Colors.blueAccent,
               ),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Drawer Header',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Image.asset(
+                    'assets/new_logo.jpeg',
+                    width: 100,
+                    height: 100,
+                  ),
+                ],
               ),
             ),
             ListTile(
@@ -206,7 +197,6 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-
             ListTile(
               title: Text('Tu Perfil'),
               onTap: () {
@@ -220,12 +210,11 @@ class _HomePageState extends State<HomePage> {
               title: Text('Tu Historial Medico'),
               onTap: () {
                 showDialog(
-              context: context,
-              builder: (context) => PasswordDialog(), // Muestra el PasswordDialog
-            );
+                  context: context,
+                  builder: (context) => PasswordDialog(),
+                );
               },
             ),
-
           ],
         ),
       ),

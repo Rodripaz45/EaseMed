@@ -13,140 +13,164 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Med Ease'),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blueAccent, // Color actualizado
       ),
       body: SingleChildScrollView(
-        // Envuelve el contenido del Scaffold en SingleChildScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo de Heartlink
               Image.asset(
-                'assets/logo_medease.jpeg', // Asegúrate de tener este archivo en tu proyecto
+                'assets/new_logo.jpeg',
                 height: 200,
               ),
               SizedBox(height: 20),
-              // Campo de entrada de correo electrónico
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildTextField(emailController, 'Correo electrónico'),
               SizedBox(height: 16),
-              // Campo de entrada de contraseña
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildTextField(passwordController, 'Contraseña', isPassword: true),
               SizedBox(height: 16),
-              // Botón de inicio de sesión
-              ElevatedButton(
-                onPressed: () async {
-                  email = emailController.text;
-                  String password = passwordController.text;
-
-                  // Guardar el correo electrónico en una variable
-
-                  ApiService apiService = ApiService();
-                  int? statusCode = await apiService.login(email, password);
-
-                  if (statusCode == 200) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  } else {
-                    // Mostrar mensaje de error
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Error'),
-                          content: Text(
-                              'Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-                child: Text(
-                  'INICIAR SESIÓN',
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-              ),
+              _buildLoginButton(context),
               SizedBox(height: 16),
-              // Opciones de inicio de sesión social
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // Iniciar sesión con Facebook
-                    },
-                    iconSize: 50,
-                    icon: Icon(
-                      Icons.facebook,
-                      color: Colors.red,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      // Iniciar sesión con correo electrónico
-                    },
-                    iconSize: 50,
-                    icon: Icon(
-                      Icons.email,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
+              _buildSocialLoginOptions(),
               SizedBox(height: 16),
-              // Enlace para restablecer la contraseña
-              TextButton(
-                child: Text(
-                  '¿Olvidaste tu contraseña?',
-                  style: TextStyle(
-                    color: Colors.red, // Cambia el color aquí
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onPressed: () {
-                  // Lógica para restablecer la contraseña
-                },
-              ),
+              _buildForgotPasswordLink(),
               SizedBox(height: 16),
-              // Botón para ir a la página de registro
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()),
-                  );
-                },
-                child: Text('Registrarse'),
-              ),
+              _buildSignUpButton(context),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String labelText, {bool isPassword = false}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Colors.blueAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      ),
+      onPressed: () async {
+        email = emailController.text;
+        String password = passwordController.text;
+
+        ApiService apiService = ApiService();
+        int? statusCode = await apiService.login(email, password);
+
+        if (statusCode == 200) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Error'),
+                content: Text('Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
+      child: Text('INICIAR SESIÓN'),
+    );
+  }
+
+  Widget _buildSocialLoginOptions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {
+            // Iniciar sesión con Facebook
+          },
+          iconSize: 50,
+          icon: Icon(
+            Icons.facebook,
+            color: Colors.blue[800], // Color actualizado
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            // Iniciar sesión con correo electrónico
+          },
+          iconSize: 50,
+          icon: Icon(
+            Icons.email,
+            color: Colors.blue[800], // Color actualizado
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildForgotPasswordLink() {
+    return TextButton(
+      child: Text(
+        '¿Olvidaste tu contraseña?',
+        style: TextStyle(
+          color: Colors.blueAccent, // Color actualizado
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onPressed: () {
+        // Lógica para restablecer la contraseña
+      },
+    );
+  }
+
+  Widget _buildSignUpButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegisterPage()),
+        );
+      },
+      child: Text('Registrarse'),
     );
   }
 }
