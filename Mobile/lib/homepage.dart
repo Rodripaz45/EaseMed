@@ -58,98 +58,61 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi App Médica'),
+        title: Text('CENTRO MÉDICO LH'),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                '¡Haz tu Reserva!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField<Doctor>(
-                value: _selectedDoctor,
-                onChanged: (Doctor? newValue) {
-                  setState(() {
-                    _selectedDoctor = newValue;
-                    _selectedDoctorHours = _selectedDoctor?.horasTrabajo;
-                  });
-                },
-                items: _doctors.map<DropdownMenuItem<Doctor>>((Doctor doctor) {
-                  return DropdownMenuItem<Doctor>(
-                    value: doctor,
-                    child: Text('${doctor.nombres} ${doctor.apellidos}'),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  labelText: 'Doctor',
-                ),
-              ),
-              SizedBox(height: 10),
-              InkWell(
-                onTap: () => _selectDate(context),
-                child: IgnorePointer(
-                  child: TextFormField(
-                    controller: _dateController,
-                    decoration: InputDecoration(
-                      labelText: 'Fecha',
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(20),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Image.asset('assets/your_image.jpg'),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navegar a la pantalla de solicitud de turno
+                    },
+                    child: Text('Solicitar turno'),
                   ),
-                ),
+                  SizedBox(height: 20),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: <Widget>[
+                      _buildCard('Tus Reservas', Icons.event, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReservasPage()),
+                        );
+                      }),
+                      _buildCard('Tu Perfil', Icons.person, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                        );
+                      }),
+                      _buildCard('Tu Historial Medico', Icons.history, () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PasswordDialog(),
+                        );
+                      }),
+                      _buildCard('Nuestros Doctores', Icons.local_hospital, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DoctorProfile()),
+                        );
+                      }),
+                    ],
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                value: _selectedDoctorHours != null && _selectedDoctorHours!.isNotEmpty ? _selectedDoctorHours![0] : null,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    if (newValue != null) {
-                      _selectedDoctorHours = [newValue];
-                    }
-                  });
-                },
-                items: _selectedDoctorHours != null && _selectedDoctorHours!.isNotEmpty
-                    ? _selectedDoctorHours!
-                        .map<DropdownMenuItem<String>>((String hour) {
-                          return DropdownMenuItem<String>(
-                            value: hour,
-                            child: Text(hour),
-                          );
-                        }).toList()
-                    : [],
-                decoration: InputDecoration(
-                  labelText: 'Horas de Trabajo',
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  int? idPaciente = prefs.getInt('userId');
-                  if (_selectedDoctor == null || idPaciente == null) {
-                    print('Por favor, seleccione un doctor o verifique el ID del paciente.');
-                    return;
-                  }
-                  await _apiService.createCita(
-                    _selectedDoctor!.id.toString(),
-                    idPaciente.toString(),
-                    _dateController.text,
-                    _selectedDoctorHours![0],
-                  );
-                  _nameController.clear();
-                  _dateController.clear();
-                  _timeController.clear();
-                },
-                child: Text('Reservar'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       drawer: Drawer(
@@ -216,6 +179,25 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(String title, IconData icon, VoidCallback onTap) {
+    return Card(
+      margin: EdgeInsets.all(10),
+      child: InkWell(
+        onTap: onTap,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(icon, size: 50, color: Colors.blue),
+              SizedBox(height: 10),
+              Text(title, textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
     );
