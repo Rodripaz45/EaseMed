@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/classes/doctor.dart';
-import 'package:mediease/doctor_screen_details.dart'; // Importa la pantalla de detalles del doctorflutt
+import 'package:mediease/doctor_screen_details.dart';
+import 'package:mediease/selectDate.dart';
 
 class DoctorCard extends StatelessWidget {
   final Doctor doctor;
+  final bool canReserve; // Parámetro booleano
 
-  const DoctorCard({required this.doctor});
+  const DoctorCard({required this.doctor, required this.canReserve});
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +42,26 @@ class DoctorCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8.0), // Agrega espacio entre el texto y el botón
+            SizedBox(height: 8.0), // Espacio entre el texto y el botón
             ElevatedButton(
               onPressed: () {
-                // Navegar a la pantalla de detalles del doctor
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DoctorDetailsScreen(doctor: doctor),
-                  ),
-                );
+                if (canReserve) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SelectDate(doctor: doctor),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DoctorDetailsScreen(doctor: doctor),
+                    ),
+                  );
+                }
               },
-              child: Text('Ver Más'),
+              child: Text(canReserve ? 'Reservar Cita' : 'Ver Más'),
             ),
           ],
         ),

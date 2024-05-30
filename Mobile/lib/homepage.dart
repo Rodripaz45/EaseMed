@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mediease/api_service.dart';
 import 'package:mediease/cards/password_dialog.dart';
-import 'package:mediease/classes/doctor.dart';
 import 'package:mediease/doctor_profilepage.dart';
-import 'package:intl/intl.dart';
 import 'package:mediease/profile_page.dart';
 import 'package:mediease/reservas_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mediease/selectDoctor.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,45 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-  final ApiService _apiService = ApiService();
 
-  Doctor? _selectedDoctor;
-  List<Doctor> _doctors = [];
-  List<String>? _selectedDoctorHours;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
-      _dateController.text = formattedDate;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchDoctors();
-    _selectedDoctorHours = _selectedDoctor?.horasTrabajo ?? [];
-  }
-
-  Future<void> _fetchDoctors() async {
-    try {
-      List<Doctor> fetchedDoctors = await _apiService.getMedicos();
-      setState(() {
-        _doctors = fetchedDoctors;
-      });
-    } catch (e) {
-      print('Error al obtener los médicos: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +32,10 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      // Navegar a la pantalla de solicitud de turno
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SelectDoctor()),
+                        );
                     },
                     child: Text('Solicitar turno'),
                   ),
