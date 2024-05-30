@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Perfil del Paciente'),
       ),
-      body: PacienteCard(), // Usa tu tarjeta de paciente aquí
+      body: PacienteCard(), 
     );
   }
 }

@@ -42,41 +42,78 @@ class ReservaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 2.0), // Borde azul
+        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+      ),
       margin: EdgeInsets.all(10),
-      child: ListTile(
-        title: Text('Cita #${reserva.idCita}'),
-        subtitle: Column(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Médico: ${reserva.nombreMedico}'),
-            Text('Paciente: ${reserva.nombrePaciente}'),
-            Text('Fecha: ${reserva.fecha.toString().split(' ')[0]}'),
-            Text('Hora: ${reserva.hora}'),
+            Text(
+              'Cita #${reserva.idCita}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Médico: ${reserva.nombreMedico}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Paciente: ${reserva.nombrePaciente}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Fecha: ${reserva.fecha.toString().split(' ')[0]}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Hora: ${reserva.hora}',
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                _showPaymentDialog(context);
-              },
-              child: Text('Generar QR'),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black, backgroundColor: Colors.white, // Texto negro
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold, // Texto en negritas
+                  ),
+                ),
+                onPressed: () {
+                  _showPaymentDialog(context);
+                },
+                child: Text('Generar QR'),
+              ),
             ),
           ],
         ),
       ),
     );
   }
-    void _showPaymentDialog(BuildContext context) {
+
+  void _showPaymentDialog(BuildContext context) {
     TextEditingController _paymentController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
           title: Text('Ingrese el número de pago'),
           content: TextField(
             controller: _paymentController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Número de pago'),
+            decoration: InputDecoration(
+              labelText: 'Número de pago',
+              border: OutlineInputBorder(),
+            ),
           ),
           actions: [
             TextButton(
@@ -88,7 +125,6 @@ class ReservaCard extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 String paymentNumber = _paymentController.text;
-                // Aquí puedes llamar a la función para generar el QR con el número de pago
                 _generateQR(context, paymentNumber);
               },
               child: Text('Generar'),
@@ -110,10 +146,8 @@ class ReservaCard extends StatelessWidget {
                   qr: qrObject,
                 )),
       );
-      // Aquí puedes hacer cualquier otra acción con el objeto QR
     }).catchError((error) {
       print('Error al generar QR: $error');
     });
   }
-
 }

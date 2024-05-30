@@ -73,7 +73,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pantalla 1'),
+        title: Text('Nuestros Doctores'),
+        backgroundColor: Colors.blue, // Color azul para el AppBar
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -83,49 +84,61 @@ class _DoctorProfileState extends State<DoctorProfile> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _filteredDoctors.length,
-        itemBuilder: (context, index) {
-          return DoctorCard(doctor: _filteredDoctors[index], canReserve: false);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Dos columnas
+            childAspectRatio: 0.60, // Relación de aspecto ajustada
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: _filteredDoctors.length,
+          itemBuilder: (context, index) {
+            return DoctorCard(
+              doctor: _filteredDoctors[index],
+              canReserve: false,
+            );
+          },
+        ),
       ),
     );
   }
 
- void _showFilterOptions(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Filtrar por especialidades'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: _especialidades.map((especialidad) {
-              return CustomCheckboxListTile(
-                title: especialidad.nombre,
-                value: especialidad.seleccionada,
-                onChanged: (value) {
-                  setState(() {
-                    _setCheckState(especialidad, value ?? false);
-                    _applyFilter();
-                  });
-                },
-              );
-            }).toList(),
+  void _showFilterOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Filtrar por especialidades'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: _especialidades.map((especialidad) {
+                return CustomCheckboxListTile(
+                  title: especialidad.nombre,
+                  value: especialidad.seleccionada,
+                  onChanged: (value) {
+                    setState(() {
+                      _setCheckState(especialidad, value ?? false);
+                      _applyFilter();
+                    });
+                  },
+                );
+              }).toList(),
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Cerrar'),
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   bool _isChecked(Especialidad especialidad) {
     return especialidad.seleccionada;

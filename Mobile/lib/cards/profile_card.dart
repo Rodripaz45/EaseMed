@@ -36,10 +36,10 @@ class _PacienteCardState extends State<PacienteCard> {
       throw Exception('ID de paciente no encontrado en las preferencias compartidas');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
         child: FutureBuilder<Paciente>(
           future: _pacienteFuture,
@@ -60,30 +60,69 @@ class _PacienteCardState extends State<PacienteCard> {
   }
 
   Widget _buildPacienteCard(Paciente paciente) {
-    return Card(
-      margin: EdgeInsets.all(20.0),
-      child: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'ID: ${paciente.id}',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.0),
-            Text('Nombre: ${paciente.nombre} ${paciente.apellido}'),
-            SizedBox(height: 5.0),
-            Text('Fecha de Nacimiento: ${paciente.fechaNacimiento}'),
-            SizedBox(height: 5.0),
-            Text('Documento de Identidad: ${paciente.documentoIdentidad}'),
-            SizedBox(height: 5.0),
-            Text('Teléfono: ${paciente.telefono}'),
-            SizedBox(height: 5.0),
-            Text('Dirección: ${paciente.direccion}'),
-          ],
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildInfoRow('ID:', paciente.id.toString(), Icons.perm_identity),
+              SizedBox(height: 10.0),
+              _buildInfoRow('Nombre:', '${paciente.nombre} ${paciente.apellido}', Icons.person),
+              SizedBox(height: 10.0),
+              _buildInfoRow('Fecha de Nacimiento:', _formatDate(paciente.fechaNacimiento), Icons.cake),
+              SizedBox(height: 10.0),
+              _buildInfoRow('Documento de Identidad:', paciente.documentoIdentidad, Icons.credit_card),
+              SizedBox(height: 10.0),
+              _buildInfoRow('Teléfono:', paciente.telefono, Icons.phone),
+              SizedBox(height: 10.0),
+              _buildInfoRow('Dirección:', paciente.direccion, Icons.home),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
+  }
+
+  Widget _buildInfoRow(String label, String value, IconData icon) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: Colors.blue),
+        SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MedEase Login',
       theme: ThemeData(
-        primarySwatch: Colors.red, // Utilizamos el color rojo como tema principal
+        primarySwatch: Colors.blue, // Utilizamos el color rojo como tema principal
+        appBarTheme: AppBarTheme(
+          color: Colors.blue, // Color azul para todos los AppBar
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: LoginPage(),

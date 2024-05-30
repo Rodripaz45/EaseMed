@@ -73,7 +73,7 @@ class _SelectDoctorState extends State<SelectDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pantalla 1'),
+        title: Text('Nuestros Doctores'),
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),
