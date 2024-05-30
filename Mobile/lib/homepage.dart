@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MED EASE'),
+        title: Text('CENTRO MÉDICO LH'),
       ),
       body: SingleChildScrollView(
         child: Column(
