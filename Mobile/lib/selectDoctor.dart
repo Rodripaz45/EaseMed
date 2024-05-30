@@ -10,12 +10,12 @@ class Especialidad {
   Especialidad(this.nombre, this.seleccionada);
 }
 
-class DoctorProfile extends StatefulWidget {
+class SelectDoctor extends StatefulWidget {
   @override
-  _DoctorProfileState createState() => _DoctorProfileState();
+  _SelectDoctorState createState() => _SelectDoctorState();
 }
 
-class _DoctorProfileState extends State<DoctorProfile> {
+class _SelectDoctorState extends State<SelectDoctor> {
   late List<Doctor> _originalDoctors = [];
   late List<Doctor> _filteredDoctors = [];
   final ApiService apiService = ApiService();
@@ -86,7 +86,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
       body: ListView.builder(
         itemCount: _filteredDoctors.length,
         itemBuilder: (context, index) {
-          return DoctorCard(doctor: _filteredDoctors[index], canReserve: false);
+          return DoctorCard(doctor: _filteredDoctors[index], canReserve: true);
         },
       ),
     );
