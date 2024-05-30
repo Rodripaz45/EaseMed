@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CENTRO MÉDICO LH'),
+        title: Text('MED EASE'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
               child: Column(
                 children: [
-                  Image.asset('assets/your_image.jpg'),
+                  Image.asset('assets/new_logo_small.jpg'),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
