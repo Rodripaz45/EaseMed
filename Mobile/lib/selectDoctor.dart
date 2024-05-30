@@ -83,11 +83,23 @@ class _SelectDoctorState extends State<SelectDoctor> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _filteredDoctors.length,
-        itemBuilder: (context, index) {
-          return DoctorCard(doctor: _filteredDoctors[index], canReserve: true);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Dos columnas
+            childAspectRatio: 0.60, // Relación de aspecto ajustada
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: _filteredDoctors.length,
+          itemBuilder: (context, index) {
+            return DoctorCard(
+              doctor: _filteredDoctors[index],
+              canReserve: true,
+            );
+          },
+        ),
       ),
     );
   }
