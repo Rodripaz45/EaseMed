@@ -25,8 +25,11 @@ class _SelectDateState extends State<SelectDate> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Turnos'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: Colors.white), // Ícono morado oscuro
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -35,14 +38,28 @@ class _SelectDateState extends State<SelectDate> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${widget.doctor.especialidades.join(" | ")} | ${widget.doctor.nombres} ${widget.doctor.apellidos}',
-              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: Color(0xFF774568),
+                    width: 2.0), // Borde morado oscuro
+                borderRadius:
+                    BorderRadius.circular(8.0), // Bordes redondeados opcional
+              ),
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                '${widget.doctor.especialidades.join(" | ")} | ${widget.doctor.nombres} ${widget.doctor.apellidos}',
+                style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black), // Texto negro
+              ),
             ),
             SizedBox(height: 16.0),
             Text(
               'Elegí día y horario',
-              style: TextStyle(fontSize: 18.0),
+              style:
+                  TextStyle(fontSize: 18.0, color: Colors.black), // Texto negro
             ),
             SizedBox(height: 16.0),
             TableCalendar(
@@ -73,16 +90,36 @@ class _SelectDateState extends State<SelectDate> {
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
               },
+              calendarStyle: CalendarStyle(
+                selectedDecoration: BoxDecoration(
+                  color: Color(
+                      0xFF774568), // Color morado para la fecha seleccionada
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: Colors
+                      .grey, // Puedes cambiar esto al color que prefieras para la fecha de hoy
+                  shape: BoxShape.circle,
+                ),
+                // Otros estilos que quieras personalizar
+              ),
             ),
             SizedBox(height: 16.0),
-            // Aquí podrías añadir un selector de horarios
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF774568), // Fondo morado oscuro
+                foregroundColor: Colors.white, // Texto blanco
+              ),
               onPressed: () {
-                String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDay);
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd').format(_selectedDay);
                 Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SelectHour(fecha: formattedDate, doctor: widget.doctor,)),
-                        );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SelectHour(fecha: formattedDate, doctor: widget.doctor),
+                  ),
+                );
               },
               child: Text('Reservar Cita'),
             ),

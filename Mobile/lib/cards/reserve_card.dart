@@ -44,50 +44,68 @@ class ReservaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2.0), // Borde azul
-        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+        border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+        borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
       ),
-      margin: EdgeInsets.all(10),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(8.0),
+      child: Card(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Cita #${reserva.idCita}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Médico: ${reserva.nombreMedico}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Paciente: ${reserva.nombrePaciente}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Fecha: ${reserva.fecha.toString().split(' ')[0]}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Hora: ${reserva.hora}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: Colors.white, // Texto negro
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold, // Texto en negritas
+            Container(
+              width: double.infinity,
+              color: Color(0xFF774568), // Fondo morado oscuro
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Fecha: ${reserva.fecha.toString().split(' ')[0]}',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                onPressed: () {
-                  _showPaymentDialog(context);
-                },
-                child: Text('Generar QR'),
+                  Text(
+                    'Hora: ${reserva.hora}',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Cita #${reserva.idCita}',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Médico: ${reserva.nombreMedico}',
+                    style: TextStyle(fontSize: 14.0, color: Colors.grey[700]),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Paciente: ${reserva.nombrePaciente}',
+                    style: TextStyle(fontSize: 14.0, color: Colors.grey[700]),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 16.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Color(0xFF774568), // Texto blanco
+                    ),
+                    onPressed: () {
+                      _showPaymentDialog(context);
+                    },
+                    child: Text('Pagar'),
+                  ),
+                ],
               ),
             ),
           ],
@@ -123,11 +141,14 @@ class ReservaCard extends StatelessWidget {
               child: Text('Cancelar'),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Color(0xFF774568), // Texto blanco
+              ),
               onPressed: () {
                 String paymentNumber = _paymentController.text;
                 _generateQR(context, paymentNumber);
               },
-              child: Text('Generar'),
+              child: Text('Pagar'),
             ),
           ],
         );

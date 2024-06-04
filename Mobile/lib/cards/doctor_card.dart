@@ -13,7 +13,7 @@ class DoctorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2.0), // Borde azul
+        border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
         borderRadius: BorderRadius.circular(8.0), // Bordes redondeados opcional
       ),
       child: Card(
@@ -31,17 +31,21 @@ class DoctorCard extends StatelessWidget {
               SizedBox(height: 8.0),
               Text(
                 '${doctor.nombres} ${doctor.apellidos}',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black), // Texto negro
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 8.0),
               Text(
-                'BDS, MDS - Periodontology and Oral Implantology, 16 Years Experience',
+                '${doctor.especialidades.join(', ')}',
                 style: TextStyle(fontSize: 12.0, color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 8.0),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF774568), // Fondo morado oscuro
+                  foregroundColor: Colors.white, // Texto blanco
+                ),
                 onPressed: () {
                   if (canReserve) {
                     Navigator.push(

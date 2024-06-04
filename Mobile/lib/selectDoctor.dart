@@ -74,6 +74,8 @@ class _SelectDoctorState extends State<SelectDoctor> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nuestros Doctores'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),

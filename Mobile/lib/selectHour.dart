@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class SelectHour extends StatelessWidget {
   final String fecha;
   final Doctor doctor;
@@ -17,20 +18,28 @@ class SelectHour extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmar Cita'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+          ),
+          title: Text('Confirmar Cita', style: TextStyle(color: Colors.black)), // Texto negro
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ID del Médico: ${doctor.id}'),
-              Text('Nombre: ${doctor.nombres} ${doctor.apellidos}'),
-              Text('Especialidad: ${doctor.especialidades.join(", ")}'),
-              Text('Fecha: $fecha'),
-              Text('Hora: $hora'),
+              Text('ID del Médico: ${doctor.id}', style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Nombre: ${doctor.nombres} ${doctor.apellidos}', style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Especialidad: ${doctor.especialidades.join(", ")}', style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Fecha: $fecha', style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Hora: $hora', style: TextStyle(color: Colors.black)), // Texto negro
             ],
           ),
           actions: [
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF774568), // Fondo morado oscuro
+                foregroundColor: Colors.white, // Texto blanco
+              ),
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 int? userId = prefs.getInt('userId');
@@ -55,8 +64,10 @@ class SelectHour extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Turnos'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white), // Ícono morado oscuro
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -65,14 +76,21 @@ class SelectHour extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${doctor.especialidades.join(" | ")} | ${doctor.nombres} ${doctor.apellidos}',
-              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+                borderRadius: BorderRadius.circular(8.0), // Bordes redondeados opcional
+              ),
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                '${doctor.especialidades.join(" | ")} | ${doctor.nombres} ${doctor.apellidos}',
+                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black), // Texto negro
+              ),
             ),
             SizedBox(height: 16.0),
             Text(
               'Elegí día y horario',
-              style: TextStyle(fontSize: 18.0),
+              style: TextStyle(fontSize: 18.0, color: Colors.black), // Texto negro
             ),
             SizedBox(height: 16.0),
             Center(
@@ -81,7 +99,7 @@ class SelectHour extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue),
+                    color: Color(0xFF774568)), // Texto morado oscuro
               ),
             ),
             SizedBox(height: 16.0),
@@ -100,7 +118,7 @@ class SelectHour extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: Colors.lightBlue,
+                        backgroundColor: Color(0xFF774568), // Fondo morado oscuro
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),

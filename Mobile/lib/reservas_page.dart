@@ -56,7 +56,8 @@ class _ReservasPageState extends State<ReservasPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Reservas'),
-        backgroundColor: Colors.blue, // Color azul para el AppBar
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(20),

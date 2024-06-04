@@ -7,6 +7,8 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfil del Paciente'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: PacienteCard(), 
     );

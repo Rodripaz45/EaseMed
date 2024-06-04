@@ -43,6 +43,8 @@ class _ConsultasPageState extends State<ConsultasPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de Consultas'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: consultas.isNotEmpty
           ? ListView.builder(

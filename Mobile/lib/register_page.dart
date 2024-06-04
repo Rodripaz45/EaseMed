@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:mediease/api_service.dart';
 import 'package:mediease/login_page.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -16,8 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MedEase Register',
       theme: ThemeData(
-        primarySwatch: Colors.red,
-        scaffoldBackgroundColor: Colors.red,
+        primarySwatch: Colors.deepPurple, // Utilizamos un color morado oscuro como tema principal
+        scaffoldBackgroundColor: Colors.white, // Fondo blanco
         visualDensity: VisualDensity.adaptivePlatformDensity,
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(),
@@ -36,8 +37,9 @@ class RegisterPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Med Ease Register',
-          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -93,38 +95,38 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _submitForm() {
-  if (_formKey.currentState!.validate()) {
-    // Instancia ApiService
-    ApiService apiService = ApiService();
+    if (_formKey.currentState!.validate()) {
+      // Instancia ApiService
+      ApiService apiService = ApiService();
 
-    // Obtén los valores de los campos del formulario
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String nombre = _nombreController.text;
-    String apellido = _apellidoController.text;
-    String fechaNacimiento = _fechaNacimientoController.text;
-    String documentoIdentidad = _documentoIdentidadController.text;
-    String telefono = _telefonoController.text;
-    String direccion = _direccionController.text;
+      // Obtén los valores de los campos del formulario
+      String email = _emailController.text;
+      String password = _passwordController.text;
+      String nombre = _nombreController.text;
+      String apellido = _apellidoController.text;
+      String fechaNacimiento = _fechaNacimientoController.text;
+      String documentoIdentidad = _documentoIdentidadController.text;
+      String telefono = _telefonoController.text;
+      String direccion = _direccionController.text;
 
-    // Llama al método register de ApiService con los datos del formulario
-    apiService.register(
-      email,
-      password,
-      nombre,
-      apellido,
-      fechaNacimiento,
-      documentoIdentidad,
-      telefono,
-      direccion,
-    ).then((_) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),);
-      print('Registro completado con éxito');
-    });
+      // Llama al método register de ApiService con los datos del formulario
+      apiService.register(
+        email,
+        password,
+        nombre,
+        apellido,
+        fechaNacimiento,
+        documentoIdentidad,
+        telefono,
+        direccion,
+      ).then((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),);
+        print('Registro completado con éxito');
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +139,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _emailController,
             decoration: InputDecoration(
               labelText: 'Correo electrónico',
-              prefixIcon: Icon(Icons.email, color: Colors.red),
+              prefixIcon: Icon(Icons.email, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -151,7 +153,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _passwordController,
             decoration: InputDecoration(
               labelText: 'Contraseña',
-              prefixIcon: Icon(Icons.lock, color: Colors.red),
+              prefixIcon: Icon(Icons.lock, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             obscureText: true,
             validator: (value) {
@@ -166,7 +168,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _nombreController,
             decoration: InputDecoration(
               labelText: 'Nombre',
-              prefixIcon: Icon(Icons.person, color: Colors.red),
+              prefixIcon: Icon(Icons.person, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -180,7 +182,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _apellidoController,
             decoration: InputDecoration(
               labelText: 'Apellido',
-              prefixIcon: Icon(Icons.person, color: Colors.red),
+              prefixIcon: Icon(Icons.person, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -197,7 +199,7 @@ class _RegisterFormState extends State<RegisterForm> {
               enabled: false,
               decoration: InputDecoration(
                 labelText: 'Fecha de Nacimiento',
-                prefixIcon: Icon(Icons.calendar_today, color: Colors.red),
+                prefixIcon: Icon(Icons.calendar_today, color: Color(0xFF774568)), // Icono morado oscuro
               ),
               validator: (value) {
                 if (value!.isEmpty) {
@@ -212,7 +214,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _documentoIdentidadController,
             decoration: InputDecoration(
               labelText: 'Documento de Identidad',
-              prefixIcon: Icon(Icons.assignment, color: Colors.red),
+              prefixIcon: Icon(Icons.assignment, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -229,22 +231,22 @@ class _RegisterFormState extends State<RegisterForm> {
               style: TextStyle(color: Colors.white),
             ),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF774568)), // Fondo morado oscuro
             ),
           ),
           SizedBox(height: 16),
           _image != null
               ? Image.file(
-                  _image!,
-                  height: 100,
-                )
+            _image!,
+            height: 100,
+          )
               : SizedBox(),
           SizedBox(height: 16),
           TextFormField(
             controller: _telefonoController,
             decoration: InputDecoration(
               labelText: 'Teléfono',
-              prefixIcon: Icon(Icons.phone, color: Colors.red),
+              prefixIcon: Icon(Icons.phone, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -258,7 +260,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _direccionController,
             decoration: InputDecoration(
               labelText: 'Dirección',
-              prefixIcon: Icon(Icons.location_on, color: Colors.red),
+              prefixIcon: Icon(Icons.location_on, color: Color(0xFF774568)), // Icono morado oscuro
             ),
             validator: (value) {
               if (value!.isEmpty) {
@@ -276,7 +278,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 style: TextStyle(color: Colors.white),
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF774568)), // Fondo morado oscuro
               ),
             ),
           ),

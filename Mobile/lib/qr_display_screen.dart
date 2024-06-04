@@ -15,6 +15,8 @@ class QRDisplayScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Código QR'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: Center(
         child: Column(

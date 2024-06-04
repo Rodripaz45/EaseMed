@@ -65,6 +65,7 @@ class _PacienteCardState extends State<PacienteCard> {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
+          side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
         ),
         elevation: 5,
         child: Padding(
@@ -98,7 +99,7 @@ class _PacienteCardState extends State<PacienteCard> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.blue),
+        Icon(icon, color: Color(0xFF774568)), // Icono morado oscuro
         SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -109,7 +110,7 @@ class _PacienteCardState extends State<PacienteCard> {
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: Colors.black, // Texto negro
                 ),
               ),
               SizedBox(height: 5),
@@ -117,6 +118,7 @@ class _PacienteCardState extends State<PacienteCard> {
                 value,
                 style: TextStyle(
                   fontSize: 16.0,
+                  color: Colors.black, // Texto negro
                 ),
               ),
             ],

@@ -74,7 +74,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nuestros Doctores'),
-        backgroundColor: Colors.blue, // Color azul para el AppBar
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),

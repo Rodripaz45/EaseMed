@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/homepage.dart';
-import 'package:mediease/register_page.dart'; // Importa tu archivo de dialogo de contraseña
+import 'package:mediease/register_page.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   static String email = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Med Ease'),
-        backgroundColor: Colors.blueAccent, // Color actualizado
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -63,6 +65,7 @@ class LoginPage extends StatelessWidget {
         obscureText: isPassword,
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: TextStyle(color: Color(0xFF774568)), // Texto morado oscuro
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: BorderSide.none,
@@ -70,6 +73,7 @@ class LoginPage extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
         ),
+        cursorColor: Color(0xFF774568), // Cursor morado oscuro
       ),
     );
   }
@@ -77,7 +81,7 @@ class LoginPage extends StatelessWidget {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white, backgroundColor: Color(0xFF774568),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
@@ -100,14 +104,18 @@ class LoginPage extends StatelessWidget {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text('Error'),
-                content: Text('Credenciales incorrectas. Por favor, inténtalo de nuevo.'),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+                ),
+                title: Text('Error', style: TextStyle(color: Colors.black)), // Texto negro
+                content: Text('Credenciales incorrectas. Por favor, inténtalo de nuevo.', style: TextStyle(color: Colors.black)), // Texto negro
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('OK'),
+                    child: Text('OK', style: TextStyle(color: Color(0xFF774568))), // Texto morado oscuro
                   ),
                 ],
               );
@@ -130,7 +138,7 @@ class LoginPage extends StatelessWidget {
           iconSize: 50,
           icon: Icon(
             Icons.facebook,
-            color: Colors.blue[800], // Color actualizado
+            color: Color(0xFF774568), // Color morado oscuro
           ),
         ),
         IconButton(
@@ -140,7 +148,7 @@ class LoginPage extends StatelessWidget {
           iconSize: 50,
           icon: Icon(
             Icons.email,
-            color: Colors.blue[800], // Color actualizado
+            color: Color(0xFF774568), // Color morado oscuro
           ),
         ),
       ],
@@ -152,7 +160,7 @@ class LoginPage extends StatelessWidget {
       child: Text(
         '¿Olvidaste tu contraseña?',
         style: TextStyle(
-          color: Colors.blueAccent, // Color actualizado
+          color: Color(0xFF774568), // Color morado oscuro
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -164,6 +172,13 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildSignUpButton(BuildContext context) {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Color(0xFF774568),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      ),
       onPressed: () {
         Navigator.push(
           context,

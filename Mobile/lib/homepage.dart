@@ -11,13 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('CENTRO MÉDICO LH'),
+        backgroundColor: Color(0xFF774568), // Color morado oscuro
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -31,11 +31,15 @@ class _HomePageState extends State<HomePage> {
                   Image.asset('assets/new_logo_small.jpg'),
                   SizedBox(height: 20),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF774568), // Fondo morado oscuro
+                      foregroundColor: Colors.white, // Texto blanco
+                    ),
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SelectDoctor()),
-                        );
+                        context,
+                        MaterialPageRoute(builder: (context) => SelectDoctor()),
+                      );
                     },
                     child: Text('Solicitar turno'),
                   ),
@@ -83,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
+                color:Color(0xFF774568),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -149,15 +153,19 @@ class _HomePageState extends State<HomePage> {
   Widget _buildCard(String title, IconData icon, VoidCallback onTap) {
     return Card(
       margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0), // Bordes redondeados opcional
+        side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+      ),
       child: InkWell(
         onTap: onTap,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(icon, size: 50, color: Colors.blue),
+              Icon(icon, size: 50, color: Color(0xFF774568)), // Ícono morado oscuro
               SizedBox(height: 10),
-              Text(title, textAlign: TextAlign.center),
+              Text(title, textAlign: TextAlign.center, style: TextStyle(color: Colors.black)), // Texto negro
             ],
           ),
         ),
