@@ -44,7 +44,8 @@ class ReservaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+        border: Border.all(
+            color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
         borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
       ),
       margin: EdgeInsets.all(8.0),
@@ -61,12 +62,18 @@ class ReservaCard extends StatelessWidget {
                 children: [
                   Text(
                     'Fecha: ${reserva.fecha.toString().split(' ')[0]}',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     'Hora: ${reserva.hora}',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -80,7 +87,10 @@ class ReservaCard extends StatelessWidget {
                   SizedBox(height: 8.0),
                   Text(
                     'Cita #${reserva.idCita}',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 8.0),
@@ -98,7 +108,8 @@ class ReservaCard extends StatelessWidget {
                   SizedBox(height: 16.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Color(0xFF774568), // Texto blanco
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color(0xFF774568), // Texto blanco
                     ),
                     onPressed: () {
                       _showPaymentDialog(context);
@@ -121,17 +132,11 @@ class ReservaCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
           title: Text('Ingrese el número de pago'),
           content: TextField(
             controller: _paymentController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Número de pago',
-              border: OutlineInputBorder(),
-            ),
+            decoration: InputDecoration(labelText: 'Número de pago'),
           ),
           actions: [
             TextButton(
@@ -141,14 +146,11 @@ class ReservaCard extends StatelessWidget {
               child: Text('Cancelar'),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Color(0xFF774568), // Texto blanco
-              ),
               onPressed: () {
                 String paymentNumber = _paymentController.text;
                 _generateQR(context, paymentNumber);
               },
-              child: Text('Pagar'),
+              child: Text('Generar'),
             ),
           ],
         );
@@ -160,6 +162,7 @@ class ReservaCard extends StatelessWidget {
     ApiService apiService = new ApiService();
     Future<QR> qr = apiService.generarQR(paymentNumber);
     qr.then((qrObject) {
+      print('QR generado: $qrObject');
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -167,6 +170,7 @@ class ReservaCard extends StatelessWidget {
                   qr: qrObject,
                 )),
       );
+      // Aquí puedes hacer cualquier otra acción con el objeto QR
     }).catchError((error) {
       print('Error al generar QR: $error');
     });

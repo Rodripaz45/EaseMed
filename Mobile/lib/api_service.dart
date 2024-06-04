@@ -325,7 +325,7 @@ Future<int?> register(
           "serial": 1,
           "producto": "PRODUCTO 1",
           "cantidad": 2,
-          "precio": 10,
+          "precio": 0.01,
           "descuento": 10,
           "total": 2
         }
