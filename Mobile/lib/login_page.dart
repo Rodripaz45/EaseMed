@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/new_logo.jpeg',
+                'assets/logo_morado.png',
                 height: 200,
               ),
               SizedBox(height: 20),

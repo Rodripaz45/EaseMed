@@ -1,15 +1,58 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
-
 import 'package:flutter/material.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SelectHour extends StatelessWidget {
+class SelectHour extends StatefulWidget {
   final String fecha;
   final Doctor doctor;
 
   const SelectHour({required this.fecha, required this.doctor});
+
+  @override
+  _SelectHourState createState() => _SelectHourState();
+}
+
+class _SelectHourState extends State<SelectHour> {
+  int? userId;
+  DateTime? userDob;
+  bool? isOlderThan65;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt('userId');
+      String? dobString = prefs.getString(
+          'userDob'); // Asegúrate de tener la fecha de nacimiento almacenada
+      if (dobString != null) {
+        userDob = DateTime.parse(dobString);
+        isOlderThan65 = _isPatientOlderThan65();
+        print(
+            '¿Paciente mayor de 65 años?: ${isOlderThan65 == true ? "Sí" : "No"}');
+      } else {
+        print("no hay user");
+      }
+    });
+  }
+
+  bool _isPatientOlderThan65() {
+    if (userDob == null) return false;
+    DateTime today = DateTime.now();
+    int age = today.year - userDob!.year;
+    if (today.month < userDob!.month ||
+        (today.month == userDob!.month && today.day < userDob!.day)) {
+      age--;
+    }
+    bool isOlder = age >= 65;
+    print('Edad del paciente: $age, ¿Es mayor de 65?: $isOlder');
+    return isOlder;
+  }
 
   void _showConfirmationDialog(BuildContext context, String hora) async {
     ApiService apiService = ApiService();
@@ -20,18 +63,29 @@ class SelectHour extends StatelessWidget {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+            side: BorderSide(
+                color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
           ),
-          title: Text('Confirmar Cita', style: TextStyle(color: Colors.black)), // Texto negro
+          title: Text('Confirmar Cita',
+              style: TextStyle(color: Colors.black)), // Texto negro
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ID del Médico: ${doctor.id}', style: TextStyle(color: Colors.black)), // Texto negro
-              Text('Nombre: ${doctor.nombres} ${doctor.apellidos}', style: TextStyle(color: Colors.black)), // Texto negro
-              Text('Especialidad: ${doctor.especialidades.join(", ")}', style: TextStyle(color: Colors.black)), // Texto negro
-              Text('Fecha: $fecha', style: TextStyle(color: Colors.black)), // Texto negro
-              Text('Hora: $hora', style: TextStyle(color: Colors.black)), // Texto negro
+              Text('ID del Médico: ${widget.doctor.id}',
+                  style: TextStyle(color: Colors.black)), // Texto negro
+              Text(
+                  'Nombre: ${widget.doctor.nombres} ${widget.doctor.apellidos}',
+                  style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Especialidad: ${widget.doctor.especialidades.join(", ")}',
+                  style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Fecha: ${widget.fecha}',
+                  style: TextStyle(color: Colors.black)), // Texto negro
+              Text('Hora: $hora',
+                  style: TextStyle(color: Colors.black)), // Texto negro
+              Text(
+                  '¿Paciente mayor de 65 años?: ${isOlderThan65 == true ? "Sí" : "No"}',
+                  style: TextStyle(color: Colors.black)), // Texto negro
             ],
           ),
           actions: [
@@ -41,12 +95,10 @@ class SelectHour extends StatelessWidget {
                 foregroundColor: Colors.white, // Texto blanco
               ),
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                int? userId = prefs.getInt('userId');
                 await apiService.createCita(
-                  doctor.id.toString(),
+                  widget.doctor.id.toString(),
                   userId.toString(),
-                  fecha,
+                  widget.fecha,
                   hora,
                 );
                 Navigator.of(context).pop();
@@ -61,13 +113,19 @@ class SelectHour extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> availableHours = widget.doctor.horasTrabajo;
+    if (isOlderThan65 == false) {
+      availableHours = availableHours.sublist(4);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Turnos'),
         backgroundColor: Color(0xFF774568), // Color morado oscuro
         foregroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white), // Ícono morado oscuro
+          icon: Icon(Icons.arrow_back,
+              color: Colors.white), // Ícono morado oscuro
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -78,24 +136,31 @@ class SelectHour extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
-                borderRadius: BorderRadius.circular(8.0), // Bordes redondeados opcional
+                border: Border.all(
+                    color: Color(0xFF774568),
+                    width: 2.0), // Borde morado oscuro
+                borderRadius:
+                    BorderRadius.circular(8.0), // Bordes redondeados opcional
               ),
               padding: EdgeInsets.all(8.0),
               child: Text(
-                '${doctor.especialidades.join(" | ")} | ${doctor.nombres} ${doctor.apellidos}',
-                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black), // Texto negro
+                '${widget.doctor.especialidades.join(" | ")} | ${widget.doctor.nombres} ${widget.doctor.apellidos}',
+                style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black), // Texto negro
               ),
             ),
             SizedBox(height: 16.0),
             Text(
               'Elegí día y horario',
-              style: TextStyle(fontSize: 18.0, color: Colors.black), // Texto negro
+              style:
+                  TextStyle(fontSize: 18.0, color: Colors.black), // Texto negro
             ),
             SizedBox(height: 16.0),
             Center(
               child: Text(
-                '${_formatFecha(fecha)}',
+                '${_formatFecha(widget.fecha)}',
                 style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -111,24 +176,24 @@ class SelectHour extends StatelessWidget {
                   crossAxisSpacing: 8.0,
                   childAspectRatio: 2.5,
                 ),
-                itemCount: doctor.horasTrabajo.length,
+                itemCount: availableHours.length,
                 itemBuilder: (context, index) {
                   return SizedBox(
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF774568), // Fondo morado oscuro
+                        backgroundColor:
+                            Color(0xFF774568), // Fondo morado oscuro
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
                       onPressed: () {
                         // Mostrar cuadro de diálogo de confirmación
-                        _showConfirmationDialog(
-                            context, doctor.horasTrabajo[index]);
+                        _showConfirmationDialog(context, availableHours[index]);
                       },
-                      child: Text(doctor.horasTrabajo[index]),
+                      child: Text(availableHours[index]),
                     ),
                   );
                 },

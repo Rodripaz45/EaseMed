@@ -28,7 +28,10 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
               child: Column(
                 children: [
-                  Image.asset('assets/new_logo_small.jpg'),
+                  Image.asset(
+                'assets/logo_morado.png',
+                height: 200,
+              ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(

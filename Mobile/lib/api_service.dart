@@ -29,15 +29,25 @@ Future<int?> login(String email, String password) async {
       print('Código de estado 200 - Éxito:');
 
       if (response.responseText != null) {
+        print('Respuesta JSON:');
+        print(response.responseText!);
         try {
           var jsonResponse = jsonDecode(response.responseText!);
           var userId = jsonResponse['id'] as int?;
+          var fechaNacimiento = jsonResponse['fecha_nacimiento'] as String?;
+
 
           if (userId != null) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setInt('userId', userId);
             print(
                 'ID de usuario guardado en las preferencias compartidas: $userId');
+            if (fechaNacimiento != null) {
+              await prefs.setString('userDob', fechaNacimiento);
+              print('Fecha de nacimiento guardada en las preferencias compartidas: $fechaNacimiento');
+            } else {
+              print('Error: Fecha de nacimiento nula en la respuesta JSON');
+            }
           } else {
             print('Error: ID de usuario nulo en la respuesta JSON');
           }
