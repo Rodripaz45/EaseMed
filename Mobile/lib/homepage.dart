@@ -29,14 +29,20 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   Image.asset(
-                'assets/logo_morado.png',
-                height: 200,
-              ),
+                    'assets/logo_morado.png',
+                    height: 200,
+                  ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF774568), // Fondo morado oscuro
                       foregroundColor: Colors.white, // Texto blanco
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 20), // Aumenta el padding
+                      textStyle: TextStyle(
+                        fontSize: 20, // Aumenta el tamaño del texto
+                      ),
+                      minimumSize: Size(200, 60), // Tamaño mínimo del botón
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -55,13 +61,15 @@ class _HomePageState extends State<HomePage> {
                       _buildCard('Tus Reservas', Icons.event, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ReservasPage()),
+                          MaterialPageRoute(
+                              builder: (context) => ReservasPage()),
                         );
                       }),
                       _buildCard('Tu Perfil', Icons.person, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage()),
                         );
                       }),
                       _buildCard('Tu Historial Medico', Icons.history, () {
@@ -73,7 +81,8 @@ class _HomePageState extends State<HomePage> {
                       _buildCard('Nuestros Doctores', Icons.local_hospital, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => DoctorProfile()),
+                          MaterialPageRoute(
+                              builder: (context) => DoctorProfile()),
                         );
                       }),
                     ],
@@ -90,7 +99,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color:Color(0xFF774568),
+                color: Color(0xFF774568),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +167,8 @@ class _HomePageState extends State<HomePage> {
       margin: EdgeInsets.all(10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0), // Bordes redondeados opcional
-        side: BorderSide(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
+        side: BorderSide(
+            color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
       ),
       child: InkWell(
         onTap: onTap,
@@ -166,9 +176,12 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(icon, size: 50, color: Color(0xFF774568)), // Ícono morado oscuro
+              Icon(icon,
+                  size: 50, color: Color(0xFF774568)), // Ícono morado oscuro
               SizedBox(height: 10),
-              Text(title, textAlign: TextAlign.center, style: TextStyle(color: Colors.black)), // Texto negro
+              Text(title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black)), // Texto negro
             ],
           ),
         ),

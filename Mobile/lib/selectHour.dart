@@ -84,8 +84,8 @@ class _SelectHourState extends State<SelectHour> {
               Text('Hora: $hora',
                   style: TextStyle(color: Colors.black)), // Texto negro
               Text(
-                  '¿Paciente mayor de 65 años?: ${isOlderThan65 == true ? "Sí" : "No"}',
-                  style: TextStyle(color: Colors.black)), // Texto negro
+                  'Antes de tu cita debes presentarte con tu documento de identidad en mostrador',
+                  style: TextStyle(color: Colors.red)), // Texto negro
             ],
           ),
           actions: [
