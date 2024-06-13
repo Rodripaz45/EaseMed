@@ -1,93 +1,83 @@
-// ignore_for_file: avoid_print, avoid_web_libraries_in_flutter
 import 'dart:convert';
-import 'dart:html';
+import 'package:http/http.dart' as http;
 import 'package:mediease/cards/reserve_card.dart';
 import 'package:mediease/classes/consulta.dart';
 import 'package:mediease/classes/paciente.dart';
 import 'package:mediease/classes/qr.dart';
-import 'classes/doctor.dart';
+import 'package:mediease/classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-Future<int?> login(String email, String password) async {
-  try {
-    var url = 'https://easemedapi.onrender.com/paciente/login';
-    var headers = {'Content-Type': 'application/json'};
-    var body = json.encode({
-      'email': email,
-      'password': password,
-    });
+  Future<int?> login(String email, String password) async {
+    try {
+      var url = 'https://easemedapi.onrender.com/paciente/login';
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({'email': email, 'password': password});
 
-    print('Enviando solicitud HTTP...');
+      print('Enviando solicitud HTTP...');
 
-    var response = await HttpRequest.request(url,
-        method: 'POST', requestHeaders: headers, sendData: body);
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
-    print('Solicitud completada con éxito.');
+      print('Solicitud completada con éxito.');
 
-    if (response.status == 200) {
-      print('Código de estado 200 - Éxito:');
+      if (response.statusCode == 200) {
+        print('Código de estado 200 - Éxito:');
 
-      if (response.responseText != null) {
-        print('Respuesta JSON:');
-        print(response.responseText!);
-        try {
-          var jsonResponse = jsonDecode(response.responseText!);
-          var userId = jsonResponse['id'] as int?;
-          var fechaNacimiento = jsonResponse['fecha_nacimiento'] as String?;
+        if (response.body.isNotEmpty) {
+          print('Respuesta JSON:');
+          print(response.body);
+          try {
+            var jsonResponse = jsonDecode(response.body);
+            var userId = jsonResponse['id'] as int?;
+            var fechaNacimiento = jsonResponse['fecha_nacimiento'] as String?;
 
-
-          if (userId != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setInt('userId', userId);
-            print(
-                'ID de usuario guardado en las preferencias compartidas: $userId');
-            if (fechaNacimiento != null) {
-              await prefs.setString('userDob', fechaNacimiento);
-              print('Fecha de nacimiento guardada en las preferencias compartidas: $fechaNacimiento');
+            if (userId != null) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setInt('userId', userId);
+              print('ID de usuario guardado en las preferencias compartidas: $userId');
+              if (fechaNacimiento != null) {
+                await prefs.setString('userDob', fechaNacimiento);
+                print('Fecha de nacimiento guardada en las preferencias compartidas: $fechaNacimiento');
+              } else {
+                print('Error: Fecha de nacimiento nula en la respuesta JSON');
+              }
             } else {
-              print('Error: Fecha de nacimiento nula en la respuesta JSON');
+              print('Error: ID de usuario nulo en la respuesta JSON');
             }
-          } else {
-            print('Error: ID de usuario nulo en la respuesta JSON');
+          } catch (e) {
+            print('Error al decodificar la respuesta JSON: $e');
           }
-
-          // Aquí puedes procesar el cuerpo de la respuesta según necesites
-        } catch (e) {
-          print('Error al decodificar la respuesta JSON: $e');
+        } else {
+          print('La respuesta está vacía');
         }
       } else {
-        print('La respuesta está vacía');
-      }
-    } else {
-      print('Error en la respuesta:');
-      print('Código de estado: ${response.status}');
-      print('Mensaje: ${response.statusText}');
+        print('Error en la respuesta:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.reasonPhrase}');
 
-      if (response.status == 404) {
-        // Credenciales inválidas
-        print('Error en la respuesta: Credenciales inválidas');
+        if (response.statusCode == 404) {
+          print('Error en la respuesta: Credenciales inválidas');
+        }
       }
+
+      return response.statusCode;
+    } catch (e) {
+      print('Error en la solicitud:');
+      print(e);
+      return null;
     }
-
-    // Devolver el response status
-    return response.status;
-  } catch (e) {
-    print('Error en la solicitud:');
-    print(e);
-    return null; // En caso de error, devolver null
   }
-}
 
-Future<int?> register(
-      String email,
-      String password,
-      String nombre,
-      String apellido,
-      String fechaNacimiento,
-      String documentoIdentidad,
-      String telefono,
-      String direccion) async {
+  Future<int?> register(
+    String email,
+    String password,
+    String nombre,
+    String apellido,
+    String fechaNacimiento,
+    String documentoIdentidad,
+    String telefono,
+    String direccion,
+  ) async {
     try {
       var url = 'https://easemedapi.onrender.com/paciente/register';
       var headers = {'Content-Type': 'application/json'};
@@ -104,29 +94,25 @@ Future<int?> register(
 
       print('Enviando solicitud HTTP...');
 
-      var response = await HttpRequest.request(url,
-          method: 'POST', requestHeaders: headers, sendData: body);
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       print('Solicitud completada con éxito.');
 
-      if (response.status == 200) {
+      if (response.statusCode == 200) {
         print('Código de estado 200 - Éxito:');
 
-        if (response.responseText != null) {
+        if (response.body.isNotEmpty) {
           try {
-            var jsonResponse = jsonDecode(response.responseText!);
+            var jsonResponse = jsonDecode(response.body);
             var userId = jsonResponse['id'] as int?;
 
             if (userId != null) {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setInt('userId', userId);
-              print(
-                  'ID de usuario guardado en las preferencias compartidas: $userId');
+              print('ID de usuario guardado en las preferencias compartidas: $userId');
             } else {
               print('Error: ID de usuario nulo en la respuesta JSON');
             }
-
-            // Aquí puedes procesar el cuerpo de la respuesta según necesites
           } catch (e) {
             print('Error al decodificar la respuesta JSON: $e');
           }
@@ -135,24 +121,22 @@ Future<int?> register(
         }
       } else {
         print('Error en la respuesta:');
-        print('Código de estado: ${response.status}');
-        print('Mensaje: ${response.statusText}');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.reasonPhrase}');
 
-        if (response.status == 404) {
-          // Credenciales inválidas
+        if (response.statusCode == 404) {
           print('Error en la respuesta: Credenciales inválidas');
         }
       }
-      return response.status; // Devuelve el response status
+      return response.statusCode;
     } catch (e) {
       print('Error en la solicitud:');
       print(e);
-      return null; // En caso de error, devolver null
+      return null;
     }
-}
+  }
 
-  Future<void> createCita(
-      String idMedico, String idPaciente, String fecha, String hora) async {
+  Future<void> createCita(String idMedico, String idPaciente, String fecha, String hora) async {
     try {
       var url = 'https://easemedapi.onrender.com/cita/create';
       var headers = {'Content-Type': 'application/json'};
@@ -165,26 +149,21 @@ Future<int?> register(
 
       print('Enviando solicitud HTTP...');
 
-      var response = await HttpRequest.request(url,
-          method: 'POST', requestHeaders: headers, sendData: body);
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       print('Solicitud completada con éxito.');
 
-      if (response.status == 201) {
-        // Verificar si la solicitud fue exitosa (código de estado 201 - Created)
+      if (response.statusCode == 201) {
         print('Código de estado 201 - Cita creada:');
-        print(response.responseText);
-        // Aquí puedes procesar el cuerpo de la respuesta según necesites
-      } else if (response.status == 400) {
-        // Manejar el caso de error 400 (Bad Request)
+        print(response.body);
+      } else if (response.statusCode == 400) {
         print('Error en la solicitud:');
-        print('Código de estado: ${response.status}');
-        print('Mensaje: ${response.responseText}');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
       } else {
-        // Manejar otros códigos de estado según sea necesario
         print('Error en la respuesta:');
-        print('Código de estado: ${response.status}');
-        print('Mensaje: ${response.statusText}');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.reasonPhrase}');
       }
     } catch (e) {
       print('Error en la solicitud:');
@@ -197,19 +176,12 @@ Future<int?> register(
       var url = 'https://easemedapi.onrender.com/medico';
       var headers = {'Content-Type': 'application/json'};
 
-      var response = await HttpRequest.request(url,
-          method: 'GET', requestHeaders: headers);
+      var response = await http.get(Uri.parse(url), headers: headers);
 
-      if (response.status == 200) {
-        // Verificar que response.responseText no sea nulo
-        if (response.responseText != null) {
-          // Decodificar la respuesta JSON a una lista de mapas
-          List<dynamic> jsonResponse = jsonDecode(response.responseText!);
-
-          // Convertir cada mapa en un objeto Doctor y almacenarlo en una lista
-          List<Doctor> doctors =
-              jsonResponse.map((json) => Doctor.fromJson(json)).toList();
-
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          List<dynamic> jsonResponse = jsonDecode(response.body);
+          List<Doctor> doctors = jsonResponse.map((json) => Doctor.fromJson(json)).toList();
           return doctors;
         } else {
           throw Exception('La respuesta está vacía');
@@ -227,18 +199,12 @@ Future<int?> register(
       final url = 'https://easemedapi.onrender.com/cita/paciente?id_paciente=$idPaciente';
       final headers = {'Content-Type': 'application/json'};
 
-      final response = await HttpRequest.request(
-        url,
-        method: 'GET',
-        requestHeaders: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-      if (response.status == 200) {
-        if (response.responseText != null) {
-          final jsonResponse =
-              jsonDecode(response.responseText!) as List<dynamic>;
-          final reservas =
-              jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+          final reservas = jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
           return reservas;
         } else {
           throw Exception('La respuesta está vacía');
@@ -250,8 +216,8 @@ Future<int?> register(
       throw Exception('Error en la solicitud GET: $e');
     }
   }
- 
- Future<Paciente> getPacienteById(int id) async {
+
+  Future<Paciente> getPacienteById(int id) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('userId');
@@ -263,19 +229,17 @@ Future<int?> register(
       var url = 'https://easemedapi.onrender.com/paciente/getById?id=$userId';
       var headers = {'Content-Type': 'application/json'};
 
-      var response = await HttpRequest.request(url,
-          method: 'GET', requestHeaders: headers);
+      var response = await http.get(Uri.parse(url), headers: headers);
 
-      if (response.status == 200) {
-        if (response.responseText != null) {
-          Map<String, dynamic> jsonResponse = jsonDecode(response.responseText!);
-
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          Map<String, dynamic> jsonResponse = jsonDecode(response.body);
           return Paciente.fromJson(jsonResponse);
         } else {
           throw Exception('La respuesta está vacía');
         }
       } else {
-        throw Exception('Error en la respuesta: ${response.statusText}');
+        throw Exception('Error en la respuesta: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Error en la solicitud GET: $e');
@@ -283,40 +247,36 @@ Future<int?> register(
   }
 
   Future<List<Consulta>> getConsultasById(int id) async {
-  try {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? userId = prefs.getInt('userId');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('userId');
 
-    if (userId == null) {
-      throw Exception('ID de usuario no encontrado en las preferencias compartidas');
-    }
-
-    var url = 'https://easemedapi.onrender.com/getConsultasById?id=$userId';
-    var headers = {'Content-Type': 'application/json'};
-
-    var response = await HttpRequest.request(url,
-        method: 'GET', requestHeaders: headers);
-
-    if (response.status == 200) {
-      if (response.responseText != null) {
-        List<dynamic> jsonResponse = jsonDecode(response.responseText!);
-
-        // Mapear la lista de consultas JSON a objetos Consulta
-        List<Consulta> consultas = jsonResponse.map((data) => Consulta.fromJson(data)).toList();
-
-        return consultas;
-      } else {
-        throw Exception('La respuesta está vacía');
+      if (userId == null) {
+        throw Exception('ID de usuario no encontrado en las preferencias compartidas');
       }
-    } else {
-      throw Exception('Error en la respuesta: ${response.statusText}');
-    }
-  } catch (e) {
-    throw Exception('Error en la solicitud GET: $e');
-  }
-}
 
- Future<QR> generarQR(String numeroPago) async {
+      var url = 'https://easemedapi.onrender.com/getConsultasById?id=$userId';
+      var headers = {'Content-Type': 'application/json'};
+
+      var response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          List<dynamic> jsonResponse = jsonDecode(response.body);
+          List<Consulta> consultas = jsonResponse.map((data) => Consulta.fromJson(data)).toList();
+          return consultas;
+        } else {
+          throw Exception('La respuesta está vacía');
+        }
+      } else {
+        throw Exception('Error en la respuesta: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      throw Exception('Error en la solicitud GET: $e');
+    }
+  }
+
+  Future<QR> generarQR(String numeroPago) async {
     try {
       var url = 'https://serviciostigomoney.pagofacil.com.bo/api/servicio/generarqrv2';
       var headers = {'Content-Type': 'application/json'};
@@ -341,21 +301,16 @@ Future<int?> register(
         }
       });
 
-      var response = await HttpRequest.request(
-        url,
-        method: 'POST',
-        requestHeaders: headers,
-        sendData: body,
-      );
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
-      if (response.status == 200) {
-        // Si la respuesta es exitosa, devuelve un objeto QR
-        Map<String, dynamic> jsonResponse = jsonDecode(response.responseText!);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         return QR.fromJson(jsonResponse);
       } else {
-        throw Exception('Error en la respuesta: ${response.statusText}');
+        throw Exception('Error en la respuesta: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Error en la solicitud POST: $e');
     }
-  }}
+  }
+}
