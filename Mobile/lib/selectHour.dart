@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mediease/api_service.dart';
 import 'package:mediease/classes/doctor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,13 +96,35 @@ class _SelectHourState extends State<SelectHour> {
                 foregroundColor: Colors.white, // Texto blanco
               ),
               onPressed: () async {
-                await apiService.createCita(
+                int responseStatus = await apiService.createCita(
                   widget.doctor.id.toString(),
                   userId.toString(),
                   widget.fecha,
                   hora,
                 );
-                Navigator.of(context).pop();
+
+                if (responseStatus == 201) {
+                  Fluttertoast.showToast(
+                    msg: "Cita creada con éxito",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.green,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                  for (int i = 0; i < 4; i++) {
+                    Navigator.of(context).pop();
+                  }
+                } else {
+                  Fluttertoast.showToast(
+                    msg: "Error al crear la cita",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                }
               },
               child: Text('Confirmar Cita'),
             ),

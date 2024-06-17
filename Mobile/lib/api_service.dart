@@ -16,7 +16,8 @@ class ApiService {
 
       print('Enviando solicitud HTTP...');
 
-      var response = await http.post(Uri.parse(url), headers: headers, body: body);
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
 
       print('Solicitud completada con éxito.');
 
@@ -34,10 +35,12 @@ class ApiService {
             if (userId != null) {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setInt('userId', userId);
-              print('ID de usuario guardado en las preferencias compartidas: $userId');
+              print(
+                  'ID de usuario guardado en las preferencias compartidas: $userId');
               if (fechaNacimiento != null) {
                 await prefs.setString('userDob', fechaNacimiento);
-                print('Fecha de nacimiento guardada en las preferencias compartidas: $fechaNacimiento');
+                print(
+                    'Fecha de nacimiento guardada en las preferencias compartidas: $fechaNacimiento');
               } else {
                 print('Error: Fecha de nacimiento nula en la respuesta JSON');
               }
@@ -94,7 +97,8 @@ class ApiService {
 
       print('Enviando solicitud HTTP...');
 
-      var response = await http.post(Uri.parse(url), headers: headers, body: body);
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
 
       print('Solicitud completada con éxito.');
 
@@ -109,7 +113,8 @@ class ApiService {
             if (userId != null) {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setInt('userId', userId);
-              print('ID de usuario guardado en las preferencias compartidas: $userId');
+              print(
+                  'ID de usuario guardado en las preferencias compartidas: $userId');
             } else {
               print('Error: ID de usuario nulo en la respuesta JSON');
             }
@@ -136,7 +141,8 @@ class ApiService {
     }
   }
 
-  Future<void> createCita(String idMedico, String idPaciente, String fecha, String hora) async {
+  Future<int> createCita(
+      String idMedico, String idPaciente, String fecha, String hora) async {
     try {
       var url = 'https://easemedapi.onrender.com/cita/create';
       var headers = {'Content-Type': 'application/json'};
@@ -149,7 +155,8 @@ class ApiService {
 
       print('Enviando solicitud HTTP...');
 
-      var response = await http.post(Uri.parse(url), headers: headers, body: body);
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
 
       print('Solicitud completada con éxito.');
 
@@ -165,9 +172,12 @@ class ApiService {
         print('Código de estado: ${response.statusCode}');
         print('Mensaje: ${response.reasonPhrase}');
       }
+
+      return response.statusCode;
     } catch (e) {
       print('Error en la solicitud:');
       print(e);
+      return 500; // Código de estado 500 para errores de servidor internos
     }
   }
 
@@ -181,7 +191,8 @@ class ApiService {
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {
           List<dynamic> jsonResponse = jsonDecode(response.body);
-          List<Doctor> doctors = jsonResponse.map((json) => Doctor.fromJson(json)).toList();
+          List<Doctor> doctors =
+              jsonResponse.map((json) => Doctor.fromJson(json)).toList();
           return doctors;
         } else {
           throw Exception('La respuesta está vacía');
@@ -196,7 +207,8 @@ class ApiService {
 
   static Future<List<Reserva>> getReservas(int idPaciente) async {
     try {
-      final url = 'https://easemedapi.onrender.com/cita/paciente?id_paciente=$idPaciente';
+      final url =
+          'https://easemedapi.onrender.com/cita/paciente?id_paciente=$idPaciente';
       final headers = {'Content-Type': 'application/json'};
 
       final response = await http.get(Uri.parse(url), headers: headers);
@@ -204,7 +216,8 @@ class ApiService {
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          final reservas = jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
+          final reservas =
+              jsonResponse.map((reserva) => Reserva.fromJson(reserva)).toList();
           return reservas;
         } else {
           throw Exception('La respuesta está vacía');
@@ -223,7 +236,8 @@ class ApiService {
       int? userId = prefs.getInt('userId');
 
       if (userId == null) {
-        throw Exception('ID de usuario no encontrado en las preferencias compartidas');
+        throw Exception(
+            'ID de usuario no encontrado en las preferencias compartidas');
       }
 
       var url = 'https://easemedapi.onrender.com/paciente/getById?id=$userId';
@@ -252,7 +266,8 @@ class ApiService {
       int? userId = prefs.getInt('userId');
 
       if (userId == null) {
-        throw Exception('ID de usuario no encontrado en las preferencias compartidas');
+        throw Exception(
+            'ID de usuario no encontrado en las preferencias compartidas');
       }
 
       var url = 'https://easemedapi.onrender.com/getConsultasById?id=$userId';
@@ -263,7 +278,8 @@ class ApiService {
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {
           List<dynamic> jsonResponse = jsonDecode(response.body);
-          List<Consulta> consultas = jsonResponse.map((data) => Consulta.fromJson(data)).toList();
+          List<Consulta> consultas =
+              jsonResponse.map((data) => Consulta.fromJson(data)).toList();
           return consultas;
         } else {
           throw Exception('La respuesta está vacía');
@@ -278,10 +294,12 @@ class ApiService {
 
   Future<QR> generarQR(String numeroPago) async {
     try {
-      var url = 'https://serviciostigomoney.pagofacil.com.bo/api/servicio/generarqrv2';
+      var url =
+          'https://serviciostigomoney.pagofacil.com.bo/api/servicio/generarqrv2';
       var headers = {'Content-Type': 'application/json'};
       var body = json.encode({
-        "tcCommerceID": "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c",
+        "tcCommerceID":
+            "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c",
         "tnMoneda": 1,
         "tnTelefono": 70986514,
         "tcCorreo": "rodripaz45@gmail.com",
@@ -301,7 +319,8 @@ class ApiService {
         }
       });
 
-      var response = await http.post(Uri.parse(url), headers: headers, body: body);
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
