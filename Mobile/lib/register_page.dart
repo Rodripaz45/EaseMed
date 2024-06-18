@@ -224,24 +224,6 @@ class _RegisterFormState extends State<RegisterForm> {
             },
           ),
           SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _getImage,
-            child: Text(
-              'Seleccionar Documento de Identidad',
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF774568)), // Fondo morado oscuro
-            ),
-          ),
-          SizedBox(height: 16),
-          _image != null
-              ? Image.file(
-            _image!,
-            height: 100,
-          )
-              : SizedBox(),
-          SizedBox(height: 16),
           TextFormField(
             controller: _telefonoController,
             decoration: InputDecoration(
