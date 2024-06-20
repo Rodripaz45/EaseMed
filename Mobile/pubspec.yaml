@@ -58,10 +58,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/logo_medease.jpeg
-    - assets/doctor1.jpeg
-    - assets/new_logo.jpeg
-    - assets/new_logo_small.jpg
     - assets/logo_morado.png
+    - assets/new_logo_theme.jpg
 
   uses-material-design: true
