@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mediease/classes/doctor.dart';
 import 'package:mediease/doctor_screen_details.dart';
@@ -7,10 +9,20 @@ class DoctorCard extends StatelessWidget {
   final Doctor doctor;
   final bool canReserve;
 
+  static final List<String> imageUrls = [
+    'https://t4.ftcdn.net/jpg/01/34/29/31/360_F_134293169_ymHT6Lufl0i94WzyE0NNMyDkiMCH9HWx.jpg',
+    'https://www.shutterstock.com/image-illustration/male-doctor-avatar-3d-illustration-260nw-2205299083.jpg',
+    'https://www.shutterstock.com/image-illustration/male-doctor-avatar-3d-illustration-260nw-2205299083.jpg',
+    'https://st3.depositphotos.com/1432405/12513/v/450/depositphotos_125136404-stock-illustration-doctor-icon-flat-style.jpg',
+    'https://st2.depositphotos.com/4226061/9064/v/950/depositphotos_90647730-stock-illustration-female-doctor-avatar-icon.jpg',
+  ];
+
+
   const DoctorCard({required this.doctor, required this.canReserve});
 
   @override
   Widget build(BuildContext context) {
+    final int randomImageIndex = Random().nextInt(imageUrls.length);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF774568), width: 2.0), // Borde morado oscuro
@@ -24,8 +36,7 @@ class DoctorCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://t3.ftcdn.net/jpg/02/48/87/00/360_F_248870078_Wuf8dA4IVf1SB8aH9Ah0HMNYOCNun479.jpg'),
+                backgroundImage: NetworkImage(imageUrls[randomImageIndex]),
                 radius: 40.0,
               ),
               SizedBox(height: 8.0),
